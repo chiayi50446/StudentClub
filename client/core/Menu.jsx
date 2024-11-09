@@ -27,6 +27,9 @@ export default function Menu(){
           <HomeIcon/>
         </IconButton>
       </Link>
+      <Link to="/clubs">
+        <Button style={isActive(location, "/clubs")}>Clubs</Button>
+      </Link>
       <Link to="/users">
         <Button style={isActive(location, "/users")}>Users</Button>
       </Link>
