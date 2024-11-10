@@ -3,7 +3,6 @@ import {useState} from 'react'
 import {useEffect} from 'react'
 import { makeStyles } from '@mui/styles'
 import Paper from '@mui/material/Paper'
-import List from '@mui/material/List'
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid2';
 import CardActions from '@mui/material/CardActions';
@@ -12,6 +11,8 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {list} from './api-club.js';
+import AddIcon from '@mui/icons-material/Add';
+import AddClub from './AddClub.jsx'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -37,12 +38,21 @@ const useStyles = makeStyles(theme => ({
     },
     root: {
         // Define your root styles here
-      },
+      }
 }));
 
 export default function ClubList() {
 
-    const [clubList, setClubList] = useState([])
+    const [clubList, setClubList] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
@@ -64,11 +74,36 @@ export default function ClubList() {
     const classes = useStyles()
     return (
         <Paper className={classes.root} elevation={4}>
-        <Typography variant="h3" className={classes.title}> 
-            All Clubs
-        </Typography> 
-        <List dense>
+            <div className={classes.root}>
+                <Grid
+                    container
+                    justifyContent="space-between"
+                    alignItems="center"
+                    flexDirection={{ xs: 'column', sm: 'row' }}
+                    sx={{ fontSize: '12px', margin: '5px' }}
+                    size={12}
+                >
+                    <Grid sx={{ order: { xs: 2, sm: 1 } }}>
+                        <Typography variant="h4" className={classes.title} inline="true"> 
+                            All Clubs
+                        </Typography> 
+                    </Grid>
+                    <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
+                        <Grid>
+                            <Button variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
+                                Add Club
+                            </Button>
+                            <AddClub 
+                                isOpen={open}
+                                handleClose={handleClose}>
+                            </AddClub>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </div>
+        
         <Grid container spacing={3}>
+            
         {clubList.map((item, i) => { 
             return <Grid key={i}>
             <Card className={classes.card} >
@@ -93,7 +128,6 @@ export default function ClubList() {
           </Grid>
         })} 
           </Grid>  
-    </List>
     </Paper>
     )
 }
