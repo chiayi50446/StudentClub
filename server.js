@@ -3,6 +3,7 @@ import app from './server/express.js'
 import mongoose from 'mongoose'
 mongoose.Promise = global.Promise
 mongoose.connect(config.mongoUri, {
+    dbName: 'StudentClub'
     //useNewUrlParser: true,
     //useCreateIndex: true, 
     //useUnifiedTopology: true 
@@ -16,7 +17,7 @@ mongoose.connection.on('error', () => {
     throw new Error(`unable to connect to database: ${config.mongoUri}`)
 })
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to User application." });
+    res.json({ message: "Welcome to Student Club application." });
 });
 app.listen(config.port, (err) => {
     if (err) {
