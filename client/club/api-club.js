@@ -1,12 +1,13 @@
-const create = async (user) => {
+const create = async (club) => {
     try {
+        console.log(club);
         let response = await fetch('/api/clubs/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(club)
         })
         return await response.json()
     } catch (err) {
@@ -15,23 +16,16 @@ const create = async (user) => {
 }
 
 const list = async (signal) => {
-    return [
-        { name: "Dance Club", pictureUri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCjXPBdhZPSLQsWltbfqNhBx7y92MN-yjHEQ&s", description: "aaa" },
-        { name: "Cooking Club", pictureUri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw02FR0tX8qBPxZz1RjQITNBlE3CXO-1ybKQ&s", description: "bbb" },
-    
-        { name: "Dance Club", pictureUri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCjXPBdhZPSLQsWltbfqNhBx7y92MN-yjHEQ&s", description: "aaa" },
-        { name: "Cooking Club", pictureUri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw02FR0tX8qBPxZz1RjQITNBlE3CXO-1ybKQ&s", description: "bbb" },
-    ];
-    // try {
-    //     let response = await fetch('/api/clubs/', {
-    //         method: 'GET',
-    //         signal: signal,
-    //     })
-    //     console.log(response)
-    //     return await response.json()
-    // } catch (err) {
-    //     console.log(err)
-    // }
+    try {
+        let response = await fetch('/api/clubs/', {
+            method: 'GET',
+            signal: signal,
+        })
+        console.log(response)
+        return await response.json()
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 const read = async (params, credentials, signal) => {

@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
+import {create} from './api-club.js';
 
 export default function AddClub({ isOpen, handleClose }) {
     const [formData, setFormData] = useState({
@@ -93,7 +94,16 @@ export default function AddClub({ isOpen, handleClose }) {
     const onSubmit = (event) => {
         event.preventDefault();
         console.log(formData);
-        handleClose();
+        create(formData).then((data) => {
+            console.log(data)
+            if (data && data.error) { 
+                console.log(data.error)
+            } else { 
+                console.log(data)
+                handleClose();
+                window.location.reload();
+            } 
+        })
       };
     return (<>
     <Dialog

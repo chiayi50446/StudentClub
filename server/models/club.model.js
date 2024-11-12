@@ -9,8 +9,7 @@ const ClubSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    trim: true,
-    required: 'Description is required'
+    trim: true
   },
   status: {
     type: String,
@@ -27,14 +26,17 @@ const ClubSchema = new mongoose.Schema({
   },
   leadership: [
     {
-      position: {
+      name: {
         type: String,
         trim: true,
-        required: 'Leadership.position is required'
+        required: 'Leadership Name is required'
       },
-      studentID: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: 'Leadership.studentID is required'
+      email: {
+        type: String,
+        trim: true,
+        unique: 'Leadership Email already exists',
+        match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+        required: 'Leadership Email is required'
       }
     }
   ],
@@ -45,21 +47,21 @@ const ClubSchema = new mongoose.Schema({
   },
   contactInfo: [
     {
-      contactEmail: {
-        type: String,
-        required: true,
-        match: [/.+\@.+\..+/, 'Please fill a valid email address'],
-      },
-      socialLinks: {
-        instagram: {
-          type: String,
-          match: /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?$/, // URL validation for Instagram
-        },
-        website: {
-          type: String,
-          match: /^https?:\/\/[a-zA-Z0-9-._~:\/?#@!$&'()*+,;=%]+$/, // URL validation for website
-        }
-      }
+      // contactEmail: {
+      //   type: String,
+      //   required: true,
+      //   match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+      // },
+      // socialLinks: {
+      //   instagram: {
+      //     type: String,
+      //     match: /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?$/, // URL validation for Instagram
+      //   },
+      //   website: {
+      //     type: String,
+      //     match: /^https?:\/\/[a-zA-Z0-9-._~:\/?#@!$&'()*+,;=%]+$/, // URL validation for website
+      //   }
+      // }
     }
   ],
   created: {
