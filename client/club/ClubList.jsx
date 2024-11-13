@@ -11,11 +11,11 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {list} from './api-club.js';
-import AddIcon from '@mui/icons-material/Add';
 import AddClub from './AddClub.jsx'
 
 const useStyles = makeStyles(theme => ({
     card: {
+        minHeight:340,
         maxWidth: 300,
         margin: "auto",
         transition: "0.3s",
@@ -44,20 +44,12 @@ const useStyles = makeStyles(theme => ({
 export default function ClubList() {
 
     const [clubList, setClubList] = useState([]);
-    const [open, setOpen] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
         list(signal).then((data) => {
-            console.log(data)
             if (data && data.error) { 
                 console.log(data.error)
             } else { 
@@ -90,13 +82,7 @@ export default function ClubList() {
                     </Grid>
                     <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
                         <Grid>
-                            <Button variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
-                                Add Club
-                            </Button>
-                            <AddClub 
-                                isOpen={open}
-                                handleClose={handleClose}>
-                            </AddClub>
+                            <AddClub />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -122,7 +108,8 @@ export default function ClubList() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small">Learn More</Button>
+                  <Button href={"/club/" + item._id} size="small">Learn More
+                  </Button>
                 </CardActions>
           </Card>
           </Grid>

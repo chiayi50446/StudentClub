@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
-import Button from '@mui/material/Button';
+import React, {useState} from 'react'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,127 +14,89 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
-import {create} from './api-club.js';
-import AddIcon from '@mui/icons-material/Add';
+import Edit from '@mui/icons-material/Edit'
+import auth from '../lib/auth-helper.js'
+import {update} from './api-club.js'
 
-export default function AddClub() {
+export default function EditClub(props) {
+    const [club, setClub] = useState({})
     const [open, setOpen] = useState(false)
-    const [formData, setFormData] = useState({
-        name:'',
-        description:'',
-        status:'',
-        type:'',
-        leadership: {
-            name:'',
-            email:''
-        },
-        pictureUri:'',
-        contactInfo: [
-            {name: "Email", status: false, uri:''},
-            {name: "Twitter", status: false, uri:''},
-            {name: "Instagram", status: false, uri:''}
-        ]
+
+//   const jwt = auth.isAuthenticated()
+  const clickButton = () => {
+    setOpen(true)
+    setClub(props.club)
+  }
+  const SaveClub = () => {
+    update({
+        clubId: props.club._id
+        }/*, {t: jwt.token}*/, club).then((data) => {
+        if (data && data.error) {
+            console.log(data.error);
+        } else {
+            window.location.reload();
+        }
     })
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-    const handleClose = () => {
-      setOpen(false);
-    };
+  }
+  const handleRequestClose = () => {
+    setOpen(false)
+  }
+  const handleChange = (event)=>{
+    const {name, value} = event.target;
+    setClub(prevClub => ({
+        ...prevClub,
+        [name]:value
+    })
+    )
+}
+const handleLeaderShipChange = (event)=>{
+    const {name, value} = event.target;
+    let leadership_name = name.split("_")[1];
+    setClub(prevClub => ({
+        ...prevClub,
+        leadership: {
+            ...prevClub.leadership,
+            [leadership_name]: value
+        }
+    })
+    )
+}
+const handleContactInfoStatus = (event, index)=>{
+    const {contactInfo} = club;
+    contactInfo[index].status = event.target.checked;
 
-    const handleCancel = () => {
-        setFormData({
-            name:'',
-            description:'',
-            status:'',
-            type:'',
-            leadership: {
-                name:'',
-                email:''
-            },
-            pictureUri:'',
-            contactInfo: [
-                {name: "Email", status: false, uri:''},
-                {name: "Twitter", status: false, uri:''},
-                {name: "Instagram", status: false, uri:''}
-            ]
-        })
-        handleClose();
-    }
+    setClub(prevClub => ({
+        ...prevClub,
+        contactInfo: contactInfo
+    }));
+}
+const handleContactInfoUri = (event, index)=>{
+    const {contactInfo} = club;
+    contactInfo[index].uri = event.target.value;
 
-    const handleChange = (event)=>{
-        const {name, value} = event.target;
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]:value
-        })
-        )
-    }
-    const handleLeaderShipChange = (event)=>{
-        const {name, value} = event.target;
-        let leadership_name = name.split("_")[1];
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            leadership: {
-                ...prevFormData.leadership,
-                [leadership_name]: value
-            }
-        })
-        )
-    }
-    const handleContactInfoStatus = (event, index)=>{
-        const {contactInfo} = formData;
-        contactInfo[index].status = event.target.checked;
+    setClub(prevClub => ({
+        ...prevClub,
+        contactInfo: contactInfo
+    }));
+}
 
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            contactInfo: contactInfo
-        }));
-    }
-    const handleContactInfoUri = (event, index)=>{
-        const {contactInfo} = formData;
-        contactInfo[index].uri = event.target.value;
+    return (<span>
+        <IconButton aria-label="Edit" onClick={clickButton} color="primary">
+            <Edit/>
+        </IconButton>
 
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            contactInfo: contactInfo
-        }));
-    }
-    const onSubmit = (event) => {
-        event.preventDefault();
-        create(formData).then((data) => {
-            if (data && data.error) { 
-                console.log(data.error)
-            } else { 
-                console.log(data)
-                handleClose();
-                window.location.reload();
-            } 
-        })
-      };
-    return (<>
-    <Button variant="contained" startIcon={<AddIcon />} onClick={handleClickOpen}>
-      Add Club
-    </Button>
-    <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: onSubmit,
-        }}
-      >
-        <DialogTitle>Add new club</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                To add a new club, please enter club details here.
+      <Dialog open={open} onClose={handleRequestClose}>
+        <DialogTitle>{"Edit Club"}</DialogTitle>
+        <DialogContent>
+        <DialogContentText>
+                To edit club, please update club details here.
               </DialogContentText>
               <TextField
                 required
                 margin="dense"
                 id="name"
                 name="name"
-                value={formData.name}
+                value={club.name}
                 label="Club name"
                 fullWidth
                 variant="standard"
@@ -143,7 +106,7 @@ export default function AddClub() {
                 margin="dense"
                 id="description"
                 name="description"
-                value={formData.description}
+                value={club.description}
                 label="Description"
                 fullWidth
                 variant="standard"
@@ -158,7 +121,7 @@ export default function AddClub() {
                   id="status"
                   name="status"
                   label="Status"
-                  value={formData.status}
+                  value={club.status}
                   onChange={handleChange}
                 >
                   <MenuItem value={"active"}>Active</MenuItem>
@@ -174,7 +137,7 @@ export default function AddClub() {
                   id="type"
                   name="type"
                   label="Type"
-                  value={formData.type}
+                  value={club.type}
                   onChange={handleChange}
                 >
                   <MenuItem value={"academic"}>Academic</MenuItem>
@@ -191,7 +154,7 @@ export default function AddClub() {
                 margin="dense"
                 id="pictureUri"
                 name="pictureUri"
-                value={formData.pictureUri}
+                value={club.pictureUri}
                 label="Picture Uri"
                 fullWidth
                 variant="standard"
@@ -200,14 +163,14 @@ export default function AddClub() {
               <Typography variant="h6" inline="true" sx={{ mt: 1 }}> 
                 Leadership Info
               </Typography> 
-              <div>
+              {club.leadership && <div>
                 <TextField
                   sx={{ mr: 2 }}
                   required
                   margin="dense"
                   id="leadership_name"
                   name="leadership_name"
-                  value={formData.leadership.name}
+                  value={club.leadership[0].name}
                   label="Name"
                   variant="standard"
                   onChange={handleLeaderShipChange}
@@ -218,17 +181,17 @@ export default function AddClub() {
                   margin="dense"
                   id="leadership_email"
                   name="leadership_email"
-                  value={formData.leadership.email}
+                  value={club.leadership[0].email}
                   label="Email"
                   type="email"
                   variant="standard"
                   onChange={handleLeaderShipChange}
                 />
-            </div>
+            </div>}
             <Typography variant="h6" inline="true" sx={{ mt: 1 }}> 
                 Contact Info
             </Typography> 
-            {formData.contactInfo.map((item, i) => { 
+            {club.contactInfo && club.contactInfo.map((item, i) => { 
                 return(<div key={i}>
                 <Grid container alignContent="center" alignItems="center" direction="row" xs={12} >
                     <Grid>
@@ -246,11 +209,15 @@ export default function AddClub() {
                 </Grid>
                 </div>)
             })}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCancel}>Cancel</Button>
-              <Button type="submit">Add</Button>
-            </DialogActions>
-            </Dialog>
-      </>)
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRequestClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={SaveClub} color="secondary" autoFocus="autoFocus">
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </span>)
 }

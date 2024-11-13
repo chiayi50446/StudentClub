@@ -1,6 +1,5 @@
 const create = async (club) => {
     try {
-        console.log(club);
         let response = await fetch('/api/clubs/', {
             method: 'POST',
             headers: {
@@ -28,7 +27,7 @@ const list = async (signal) => {
     }
 }
 
-const read = async (params, credentials, signal) => {
+const read = async (params, /*credentials,*/ signal) => {
     try {
         let response = await fetch('/api/clubs/' + params.clubId, {
             method: 'GET',
@@ -36,7 +35,7 @@ const read = async (params, credentials, signal) => {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + credentials.t
+                //'Authorization': 'Bearer ' + credentials.t
             }
         })
         return await response.json()
@@ -45,16 +44,16 @@ const read = async (params, credentials, signal) => {
     }
 }
 
-const update = async (params, credentials, user) => {
+const update = async (params/*, credentials*/, club) => {
     try {
         let response = await fetch('/api/clubs/' + params.clubId, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + credentials.t
+                // 'Authorization': 'Bearer ' + credentials.t
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(club)
         })
         return await response.json()
     } catch (err) {
@@ -62,14 +61,14 @@ const update = async (params, credentials, user) => {
     }
 }
 
-const remove = async (params, credentials) => {
+const remove = async (params/*, credentials*/) => {
     try {
         let response = await fetch('/api/clubs/' + params.clubId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + credentials.t
+                // 'Authorization': 'Bearer ' + credentials.t
             }
         })
         return await response.json()

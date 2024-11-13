@@ -9,6 +9,7 @@ import PrivateRoute from './lib/PrivateRoute.jsx'
 import EditProfile from './user/EditProfile.jsx'
 import Menu from './core/Menu' 
 import ClubList from './club/ClubList.jsx';
+import Club from './club/Club.jsx'
 function MainRouter() {
   return (
     <div>
@@ -16,6 +17,7 @@ function MainRouter() {
       <Routes>
         <Route path="/" element={<Home />} /> 
         <Route path="/clubs" element={<ClubList />} />
+        <Route path="/club/:clubId" element={<Club />} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
