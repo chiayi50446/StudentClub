@@ -8,6 +8,18 @@
 
 ## Install
 
+### Step1
+
+Edit file's name from `.env.example` to `.env`
+
+### Step2
+
+Set mongodb connect string in `.env`
+
+### Step3
+
+Install modules
+
 > npm install<br>
 > cd client<br>
 > npm install
