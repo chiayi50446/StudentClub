@@ -10,6 +10,7 @@ import EditProfile from './user/EditProfile.jsx'
 import Menu from './core/Menu' 
 import ClubList from './club/ClubList.jsx';
 import Club from './club/Club.jsx'
+import EventList from './event/EventList.jsx';
 function MainRouter() {
   return (
     <div>
@@ -18,6 +19,7 @@ function MainRouter() {
         <Route path="/" element={<Home />} /> 
         <Route path="/clubs" element={<ClubList />} />
         <Route path="/club/:clubId" element={<Club />} />
+        <Route path="/evnetList" element={<EventList />} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />

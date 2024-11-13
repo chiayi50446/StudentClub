@@ -30,6 +30,10 @@ export default function Menu(){
       <Link to="/clubs">
         <Button style={isActive(location, "/clubs")}>Clubs</Button>
       </Link>
+      
+      <Link to="/evnetList">
+        <Button style={isActive(location, "/evnetList")}>EventList</Button>
+      </Link>
       <Link to="/users">
         <Button style={isActive(location, "/users")}>Users</Button>
       </Link>
