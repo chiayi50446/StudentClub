@@ -1,5 +1,7 @@
+// Function to create a new club
 const create = async (club) => {
     try {
+        // Send a POST request to create the club
         let response = await fetch('/api/clubs/', {
             method: 'POST',
             headers: {
@@ -7,73 +9,113 @@ const create = async (club) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(club)
-        })
-        return await response.json()
+        });
+
+        // Parse the response JSON
+        const data = await response.json();
+
+        // Check if the response is successful (status code 2xx)
+        if (response.ok) {
+            alert('Club created successfully!');
+            return data; // Return the data of the newly created club
+        } else {
+            alert('Error creating club: ' + (data.message || 'Something went wrong.'));
+            return null; // Return null if creation fails
+        }
     } catch (err) {
-        console.log(err)
+        console.error('Error:', err);
+        alert('An error occurred while creating the club. Please try again later.');
+        return null; // Return null in case of any error
     }
 }
 
+// Function to list all clubs
 const list = async (signal) => {
     try {
         let response = await fetch('/api/clubs/', {
             method: 'GET',
-            signal: signal,
-        })
-        console.log(response)
-        return await response.json()
+            signal: signal
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch clubs');
+        }
+
+        // Return the list of clubs
+        return await response.json(); 
     } catch (err) {
-        console.log(err)
+        console.error('Error fetching clubs:', err);
+        return null; // Return null in case of error
     }
 }
 
-const read = async (params, /*credentials,*/ signal) => {
+// Function to read a specific club's details by ID
+const read = async (params, signal) => {
     try {
-        let response = await fetch('/api/clubs/' + params.clubId, {
+        let response = await fetch(`/api/clubs/${params.clubId}`, {
             method: 'GET',
             signal: signal,
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                //'Authorization': 'Bearer ' + credentials.t
+                'Content-Type': 'application/json'
             }
-        })
-        return await response.json()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error fetching club with ID ${params.clubId}`);
+        }
+
+        return await response.json(); // Return the club data
     } catch (err) {
-        console.log(err)
+        console.error('Error reading club:', err);
+        return null; // Return null in case of error
     }
 }
 
-const update = async (params/*, credentials*/, club) => {
+// Function to update an existing club's details
+const update = async (params, club) => {
     try {
-        let response = await fetch('/api/clubs/' + params.clubId, {
+        let response = await fetch(`/api/clubs/${params.clubId}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                // 'Authorization': 'Bearer ' + credentials.t
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(club)
-        })
-        return await response.json()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error updating club with ID ${params.clubId}`);
+        }
+
+        return await response.json(); // Return the updated club data
     } catch (err) {
-        console.log(err)
+        console.error('Error updating club:', err);
+        return null; // Return null in case of error
     }
 }
 
-const remove = async (params/*, credentials*/) => {
+// Function to remove a club (delete)
+const remove = async (params) => {
     try {
-        let response = await fetch('/api/clubs/' + params.clubId, {
+        let response = await fetch(`/api/clubs/${params.clubId}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                // 'Authorization': 'Bearer ' + credentials.t
+                'Content-Type': 'application/json'
             }
-        })
-        return await response.json()
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error deleting club with ID ${params.clubId}`);
+        }
+
+        return await response.json(); // Return the response of the delete operation
     } catch (err) {
-        console.log(err)
+        console.error('Error removing club:', err);
+        return null; // Return null in case of error
     }
 }
-export { create, list, read, update, remove }
+
+// Export the functions to be used in other parts of the app
+export { create, list, read, update, remove };

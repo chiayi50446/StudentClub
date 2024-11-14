@@ -1,11 +1,9 @@
-
-
 import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { Card, CardContent, Typography, TextField, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { create } from './api-user';
+import { create } from './api-user'; // Make sure this API is correct.
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -21,6 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   error: {
     color: 'red',
+    marginBottom: theme.spacing(2),
   },
   submit: {
     margin: '0 auto',
@@ -36,33 +35,48 @@ export default function Signup() {
 
   const [values, setValues] = useState({ 
     name: '',
-    password: '', 
     email: '',
+    password: '',
+    error: '',
   });
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // State for success dialog.
 
+  // Handle form field change
   const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value });
+    setValues({ ...values, [name]: event.target.value, error: '' }); // Clear error on input change
   };
 
+  // Close success dialog
   const handleClose = () => {
     setOpen(false);
   };
 
-  const clickSubmit = () => { 
+  // Validate and submit the form
+  const clickSubmit = (e) => {
+    e.preventDefault(); // Prevent page reload
+    if (!values.name || !values.email || !values.password) {
+      setValues({ ...values, error: 'All fields are required' });
+      return;
+    }
+
+    // Create user object
     const user = {
-      name: values.name || undefined,
-      email: values.email || undefined, 
-      password: values.password || undefined,
+      name: values.name,
+      email: values.email,
+      password: values.password,
     };
 
+    // Call create API function from api-user.js
     create(user).then((data) => { 
-      if (data.error) {
-        setValues({ ...values, error: data.error });
+      if (data && data.error) {
+        setValues({ ...values, error: data.error }); // Show error if API returns an error
       } else {
-        setOpen(true);
+        setOpen(true); // Open dialog if signup is successful
+        setValues({ name: '', email: '', password: '', error: '' }); // Clear form after submission
       }
+    }).catch((error) => {
+      setValues({ ...values, error: 'An error occurred. Please try again later.' }); // Error handling
     });
   };
 
@@ -73,12 +87,16 @@ export default function Signup() {
 
   return (
     <div>
-      <Card className={classes.card}> 
+      <Card className={classes.card}>
         <CardContent>
           <Typography variant="h6" className={classes.title}> 
             Sign Up
           </Typography>
-                  
+
+          {/* Show error message if any */}
+          {values.error && <Typography className={classes.error}>{values.error}</Typography>}
+          
+          {/* Input fields for name, email, and password */}
           <TextField
             id="name"
             label="Name"
@@ -106,13 +124,20 @@ export default function Signup() {
           />
         </CardContent> 
         <CardActions>
-          <Button color="primary" variant="contained" onClick={clickSubmit} 
-            className={classes.submit}>
+          {/* Changed button type to 'submit' */}
+          <Button 
+            color="primary" 
+            variant="contained" 
+            onClick={clickSubmit} 
+            className={classes.submit}
+            type="submit"
+          >
             Submit
           </Button>
         </CardActions> 
       </Card>
 
+      {/* Dialog for successful signup */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Account</DialogTitle>
         <DialogContent>
@@ -131,4 +156,3 @@ export default function Signup() {
     </div>
   );
 }
-
