@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-
+import {Navigate} from 'react-router-dom'
 const EventForm = ({ event = {}, onSuccess }) => {
     const [title, setTitle] = useState(event.title || '');
     const [date, setDate] = useState(event.date || '');
     const [location, setLocation] = useState(event.location || '');
     const [description, setDescription] = useState(event.description || '');
     const [organizer, setOrganizer] = useState(event.organizer || '');
-
+const[redirect, setRedirect] = useState(false)
     const handleSubmit = async (e) => {
         e.preventDefault();
         const eventData = { title, date, location, description, organizer };
@@ -16,13 +16,17 @@ const EventForm = ({ event = {}, onSuccess }) => {
             if (event._id) {
                 await updateEvent(event._id, eventData);
             } else {
-                await createEvent(eventData);
+                //await createEvent(eventData);
             }
-            onSuccess();
+//onSuccess();
+setRedirect(true);
         } catch (error) {
             console.error("Error submitting event:", error);
         }
     };
+    if (redirect) {
+        return <Navigate to='/evnetList'/>
+      }
 
     return (
         <form onSubmit={handleSubmit}>

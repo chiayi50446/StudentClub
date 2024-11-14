@@ -30,7 +30,9 @@ export default function Menu(){
       <Link to="/clubs">
         <Button style={isActive(location, "/clubs")}>Clubs</Button>
       </Link>
-      
+      <Link to="/evnetForm">
+        <Button style={isActive(location, "/evnetForm")}>EventForm</Button>
+      </Link> 
       <Link to="/evnetList">
         <Button style={isActive(location, "/evnetList")}>EventList</Button>
       </Link>
@@ -63,5 +65,3 @@ export default function Menu(){
   </AppBar>
 );
 };
-
-

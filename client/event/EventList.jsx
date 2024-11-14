@@ -1,6 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-const EventList = ({ events, onDelete, onEdit }) => (
+const EventList = ({  }) => {
+    const[event, setevent] = useState({});
+    const onDelete = async(e)=>{}
+        const onEdit = async(e)=>{}
+
+
+   const events = [{
+        _id: " 5694045544",
+        title: "Event1",
+        date:Date.now,
+        location: " Toronto",
+        organizer : "School"
+    }]
+
+    return (
     <table>
         <thead>
             <tr>
@@ -26,6 +40,7 @@ const EventList = ({ events, onDelete, onEdit }) => (
             ))}
         </tbody>
     </table>
-);
+)
+};
 
 export default EventList;

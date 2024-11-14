@@ -22,7 +22,7 @@ function MainRouter() {
         <Route path="/clubs" element={<ClubList />} />
         <Route path="/club/:clubId" element={<Club />} />
         <Route path="/evnetList" element={<EventList />} />
-        <Route path="/evnetList" element={<EventForm />} />
+        <Route path="/evnetForm" element={<EventForm />} />
        <Route path="/eventList/:eventId" element={<EventDetails/>} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
