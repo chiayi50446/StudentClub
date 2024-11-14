@@ -105,7 +105,7 @@ export default function Club() {
                                         <PersonIcon />
                                     </ListItemIcon>
                                     {club.leadership ? (
-                                        <ListItemText primary={club.leadership.name} secondary={club.leadership.email} />
+                                        <ListItemText primary={club.leadership[0].name} secondary={club.leadership[0].email} />
                                     ) : (
                                         <ListItemText primary="No leadership information available" />
                                     )}

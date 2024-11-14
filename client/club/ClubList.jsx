@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -125,7 +125,7 @@ export default function ClubList() {
 
             <Grid container spacing={3}>
                 {clubList.map((item, i) => (
-                    <Grid item key={i}>
+                    <Grid key={i}>
                         <Card className={classes.card}>
                             <CardMedia
                                 component="img"
