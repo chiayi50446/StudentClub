@@ -1,0 +1,89 @@
+/* Center the form and ensure responsiveness */
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add spacing between form fields */
+form > div {
+  margin-bottom: 15px;
+}
+
+/* Label styling for clarity and consistency */
+label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Input fields styling for uniform appearance */
+input, textarea, select {
+  padding: 10px;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3a7ba9;
+}
+
+/* Button styling consistent with EventList buttons */
+button {
+  padding: 12px 15px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background-color: #3a7ba9;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #28597d;
+}
+
+/* Add spacing and alignment to textarea fields */
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+/* Add some padding and center align the submit button */
+button[type="submit"] {
+  align-self: center;
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  form {
+    padding: 15px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
