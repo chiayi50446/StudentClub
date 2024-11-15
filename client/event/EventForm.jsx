@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import './EventForm.css';
 import {Navigate} from 'react-router-dom'
 const EventForm = ({ event = {}, onSuccess }) => {
     const [title, setTitle] = useState(event.title || '');
@@ -30,11 +30,11 @@ setRedirect(true);
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Event Title" required />
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-            <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" required />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-            <input type="text" value={organizer} onChange={(e) => setOrganizer(e.target.value)} placeholder="Organizer" required />
+         <label>Title:</label>   <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Event Title" required />
+         <label>Date:</label><input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+         <label>Location:</label> <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" required />
+         <label>Description:</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
+         <label>Organizer:</label> <input type="text" value={organizer} onChange={(e) => setOrganizer(e.target.value)} placeholder="Organizer" required />
             <button type="submit">{event._id ? 'Update Event' : 'Create Event'}</button>
         </form>
     );
