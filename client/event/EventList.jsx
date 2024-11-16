@@ -97,7 +97,7 @@ const EventList = () => {
             <Typography variant="h5" sx={{ mb: 2 }}>
                 Event Management
             </Typography>
-            {events === null ? (
+            {events === null || events.length===0 ? (
                 <Typography variant="body1">No events found.</Typography>
             ) : (
                 <List>

@@ -37,7 +37,7 @@ export default function DeleteClub(props) {
   }
 
   if (redirect) {
-    return <Navigate to='/clubs'/>
+    return <Navigate to='/'/>
   }
     return (<span>
       <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
