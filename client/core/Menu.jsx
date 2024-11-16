@@ -1,5 +1,6 @@
 import React from 'react'
 import AppBar from '@mui/material/AppBar'
+import Avatar from '@mui/material/Avatar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -7,6 +8,7 @@ import HomeIcon from '@mui/icons-material/Home'
 import Button from '@mui/material/Button'
 import auth from '../lib/auth-helper'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import LogoImg from './../assets/images/Logo.jpg';
 
 
 const isActive = (location, path) => {
@@ -19,6 +21,7 @@ export default function Menu(){
   return (
   <AppBar position="static">
     <Toolbar>
+    <Avatar alt="Logo" src={LogoImg} />
       <Typography variant="h6" color="inherit">
         Student Club
       </Typography>
@@ -27,8 +30,8 @@ export default function Menu(){
           <HomeIcon/>
         </IconButton>
       </Link>
-      <Link to="/clubs">
-        <Button style={isActive(location, "/clubs")}>Clubs</Button>
+      <Link to="/about">
+        <Button style={isActive(location, "/about")}>About</Button>
       </Link>
       <Link to="/eventForm">
         <Button style={isActive(location, "/eventForm")}>EventForm</Button>

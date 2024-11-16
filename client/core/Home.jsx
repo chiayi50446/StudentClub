@@ -25,11 +25,11 @@ export default function Home(){
   const classes = useStyles()
   return (
     <Card className={classes.card}>
-      <Typography variant="h6" className={classes.title}>Home Page</Typography>
+      <Typography variant="h6" className={classes.title}>About Page</Typography>
       <CardMedia className={classes.media} image={LogoImg} title="The Debuggers"/>
       <CardContent>
         <Typography variant="body2" component="p">
-          Welcome to the Student Club home page.
+          Welcome to the Student Club about page.
         </Typography>
       </CardContent>
     </Card>

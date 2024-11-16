@@ -18,11 +18,11 @@ function MainRouter() {
     <div>
       <Menu/>
       <Routes>
-        <Route path="/" element={<Home />} /> 
-        <Route path="/clubs" element={<ClubList />} />
+        <Route path="/" element={<ClubList />} /> 
+        <Route path="/about" element={<Home />} />
         <Route path="/club/:clubId" element={<Club />} />
-        <Route path="/evnetList" element={<EventList />} />
-        <Route path="/evnetForm" element={<EventForm />} />
+        <Route path="/eventList" element={<EventList />} />
+        <Route path="/eventForm" element={<EventForm />} />
        <Route path="/eventList/:eventId" element={<EventDetails/>} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
