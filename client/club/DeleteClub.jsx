@@ -27,7 +27,6 @@ export default function DeleteClub(props) {
       if (data && data.error) {
         console.log(data.error)
       } else {
-        // auth.clearJWT(() => console.log('deleted'))
         setRedirect(true)
       }
     })

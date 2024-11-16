@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import { read } from './api-club.js';
+import {read as readUser} from '../user/api-user.js'
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -16,12 +17,16 @@ import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteClub from './DeleteClub.jsx';
 import EditClub from './EditClub.jsx';
+import auth from '../lib/auth-helper.js'
 
 export default function Club() {
+    const jwt = auth.isAuthenticated()
     const { clubId } = useParams();
     const [club, setClub] = useState(null); // Initializing club as null for better error handling
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
+        setUsers([]);
         const abortController = new AbortController();
         const signal = abortController.signal;
 
@@ -38,6 +43,29 @@ export default function Club() {
             abortController.abort(); // Cleanup on unmount
         };
     }, [clubId]);
+
+    useEffect(() => {
+        setUsers([]);
+        if(club && club.leadership){
+            club.leadership.map((item,i) => {
+                const abortController = new AbortController()
+                const signal = abortController.signal
+                readUser({
+                    userId: item.leadershipId
+                }, {t: jwt.token}, signal).then((data) => {
+                    if (data && data.error) {
+                        console.log(data.error);
+                    } else {
+                        setUsers(oldArray => [...oldArray, data]);
+                    }
+                })
+    
+                return function cleanup(){
+                    abortController.abort()
+                }
+            })
+        }
+    }, [club]);
 
     // If club data is null or not loaded yet, render loading or error message
     if (club === null) {
@@ -100,16 +128,15 @@ export default function Club() {
                                 <Typography sx={{ mt: 1 }} variant="h6" component="div">
                                     Leadership Info
                                 </Typography>
-                                <ListItem>
-                                    <ListItemIcon>
-                                        <PersonIcon />
-                                    </ListItemIcon>
-                                    {club.leadership ? (
-                                        <ListItemText primary={club.leadership[0].name} secondary={club.leadership[0].email} />
-                                    ) : (
-                                        <ListItemText primary="No leadership information available" />
-                                    )}
-                                </ListItem>
+                                {users.length > 0 &&
+                                    users.map((item, index) => (
+                                        <ListItem key={index}>
+                                            <ListItemIcon>
+                                                <PersonIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary={item.name} secondary={item.email} />
+                                        </ListItem>
+                                    ))}
                             </Grid>
                             <Grid xs={12} md={6}>
                                 <Typography sx={{ mt: 1 }} variant="h6" component="div">

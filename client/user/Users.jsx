@@ -68,7 +68,7 @@ All Users
 {users.map((item, i) => { 
   return  <Link component={RouterLink} to={"/user/" + item._id} key={i}>
     
-<ListItem button> 
+<ListItem> 
 <ListItemAvatar>
 <Avatar> 
 

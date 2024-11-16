@@ -16,13 +16,35 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import Edit from '@mui/icons-material/Edit';
 import { update } from './api-club.js';
+import {list} from '../user/api-user.js';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EditClub(props) {
   const [club, setClub] = useState({});
 
+  const [users, setUsers] = useState([])
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(null); // State to handle errors
 
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    list(signal).then((data) => {
+        if (data && data.error) {
+            console.log(data.error);
+        } else {
+          setUsers(data);
+        }
+    }).catch(() => {
+        setError('An error occurred.');
+    });
+
+    return function cleanup() {
+        abortController.abort();
+    };
+}, []);
   // Open dialog and set the current club data
   const clickButton = () => {
     setOpen(true);
@@ -59,19 +81,37 @@ export default function EditClub(props) {
   };
 
   // Handle leadership info change
-  const handleLeaderShipChange = (event) => {
-    const { name, value } = event.target;
-    const leadershipIndex = name.split("_")[1];
-    const updatedLeadership = [...club.leadership];
-    updatedLeadership[leadershipIndex] = {
-      ...updatedLeadership[leadershipIndex],
-      [name.split("_")[0]]: value,
-    };
+  const handleLeaderShipChange = (event, index) => {
+    const { leadership } = club;
+    leadership[index].leadershipId = event.target.value;
+
     setClub((prevClub) => ({
       ...prevClub,
-      leadership: updatedLeadership,
+      leadership: leadership
     }));
   };
+
+  const AddLeaderShip = () => {
+    if(club.leadership.length === 3){
+      return;
+    }
+    setClub((prevClub) => ({
+      ...prevClub,
+      leadership: [
+        ...prevClub.leadership,
+        {leadershipId:''}
+      ]
+    }))
+  }
+
+  const DeleteLeaderShip = (i) => {
+    const { leadership } = club;
+    leadership.splice(i, 1);
+    setClub((prevClub) => ({
+      ...prevClub,
+      leadership: leadership
+    }));
+  }
 
   // Handle contact info change
   const handleContactInfoStatus = (event, index) => {
@@ -188,35 +228,41 @@ export default function EditClub(props) {
           {/* Leadership Info */}
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>
             Leadership Info
+            
+          <IconButton aria-label="addLeaderShip" color="primary" disabled={club.leadership && club.leadership.length === 3} onClick={AddLeaderShip}>
+              <AddIcon />
+          </IconButton>
           </Typography>
-          {club.leadership &&
-            club.leadership.map((leader, index) => (
-              <div key={index}>
-                <TextField
-                  sx={{ mr: 2 }}
-                  required
-                  margin="dense"
-                  id={`leadership_name_${index}`}
-                  name={`name_${index}`}
-                  value={leader.name}
-                  label="Name"
-                  variant="standard"
-                  onChange={handleLeaderShipChange}
-                />
-                <TextField
-                  sx={{ mr: 2 }}
-                  required
-                  margin="dense"
-                  id={`leadership_email_${index}`}
-                  name={`email_${index}`}
-                  value={leader.email}
-                  label="Email"
-                  type="email"
-                  variant="standard"
-                  onChange={handleLeaderShipChange}
-                />
-              </div>
-            ))}
+          {club.leadership && club.leadership.map((item, i) => {
+              return (
+                <div key={i}>
+                <FormControl required variant="standard" sx={{ mr: 1, minWidth: 200 }} >
+                  <InputLabel id="leadership">Leadership {i+1}</InputLabel>
+                  <Select
+                    required
+                    labelId="leadership"
+                    id="leadership"
+                    name="leadership"
+                    label="leadership"
+                    value={item.leadershipId}
+                    onChange={(event) => handleLeaderShipChange(event, i)}
+                  >
+                    {users.map((item, i) => {
+                      return (
+                        <MenuItem key={i} value={item._id}>{item.name}</MenuItem>
+                    )})}
+                  </Select>
+                </FormControl>
+                {i>0 && 
+                    <IconButton aria-label="deleteLeaderShip" color="primary" 
+                      onClick={()=>DeleteLeaderShip(i)}
+                      sx={{ mt: 1.5 }}>
+                        <DeleteIcon />
+                    </IconButton>
+                  }
+                </div>
+              )
+          })}
 
           {/* Contact Info */}
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>

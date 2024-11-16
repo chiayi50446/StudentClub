@@ -26,17 +26,10 @@ const ClubSchema = new mongoose.Schema({
   },
   leadership: [
     {
-      name: {
+      leadershipId: {
         type: String,
         trim: true,
-        required: 'Leadership Name is required'
-      },
-      email: {
-        type: String,
-        trim: true,
-        unique: 'Leadership Email already exists',
-        match: [/.+\@.+\..+/, 'Please fill a valid email address'],
-        required: 'Leadership Email is required'
+        required: 'Leadership id is required'
       }
     }
   ],

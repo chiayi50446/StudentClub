@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -14,19 +14,20 @@ import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import { create } from './api-club.js';  // Make sure this is the correct import for your API function
+import {list} from '../user/api-user.js';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton'
 
 export default function AddClub() {
   const [open, setOpen] = useState(false);
+  const [users, setUsers] = useState([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     status: '',
     type: '',
-    leadership: {
-      name: '',
-      email: ''
-    },
+    leadership: [{leadershipId: ''}],
     pictureUri: '',
     contactInfo: [
       { name: 'Email', status: false, uri: '' },
@@ -34,6 +35,25 @@ export default function AddClub() {
       { name: 'Instagram', status: false, uri: '' }
     ]
   });
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    list(signal).then((data) => {
+        if (data && data.error) {
+            console.log(data.error);
+        } else {
+          setUsers(data);
+        }
+    }).catch(() => {
+        setError('An error occurred.');
+    });
+
+    return function cleanup() {
+        abortController.abort();
+    };
+}, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -49,7 +69,7 @@ export default function AddClub() {
       description: '',
       status: '',
       type: '',
-      leadership: { name: '', email: '' },
+      leadership: [{leadershipId: ''}],
       pictureUri: '',
       contactInfo: [
         { name: 'Email', status: false, uri: '' },
@@ -68,17 +88,37 @@ export default function AddClub() {
     }));
   };
 
-  const handleLeaderShipChange = (event) => {
-    const { name, value } = event.target;
-    const leadershipName = name.split('_')[1];
+  const handleLeaderShipChange = (event, index) => {
+    const { leadership } = formData;
+    leadership[index].leadershipId = event.target.value;
+
     setFormData((prevFormData) => ({
       ...prevFormData,
-      leadership: {
-        ...prevFormData.leadership,
-        [leadershipName]: value
-      }
+      leadership: leadership
     }));
   };
+
+  const AddLeaderShip = () => {
+    if(formData.leadership.length === 3){
+      return;
+    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      leadership: [
+        ...prevFormData.leadership,
+        {leadershipId:''}
+      ]
+    }))
+  }
+
+  const DeleteLeaderShip = (i) => {
+    const { leadership } = formData;
+    leadership.splice(i, 1);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      leadership: leadership
+    }));
+  }
 
   const handleContactInfoStatus = (event, index) => {
     const { contactInfo } = formData;
@@ -110,7 +150,6 @@ export default function AddClub() {
         console.log(data.error);
       } else {
         // On success, close the dialog and reload the page
-        console.log(data);
         handleClose();
         window.location.reload(); // You can change this to a more efficient way of updating the UI if needed
       }
@@ -199,32 +238,41 @@ export default function AddClub() {
           />
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>
             Leadership Info
+            
+          <IconButton aria-label="addLeaderShip" color="primary" disabled={formData.leadership.length === 3} onClick={AddLeaderShip}>
+              <AddIcon />
+          </IconButton>
           </Typography>
-          <div>
-            <TextField
-              sx={{ mr: 2 }}
-              required
-              margin="dense"
-              id="leadership_name"
-              name="leadership_name"
-              value={formData.leadership.name}
-              label="Name"
-              variant="standard"
-              onChange={handleLeaderShipChange}
-            />
-            <TextField
-              sx={{ mr: 2 }}
-              required
-              margin="dense"
-              id="leadership_email"
-              name="leadership_email"
-              value={formData.leadership.email}
-              label="Email"
-              type="email"
-              variant="standard"
-              onChange={handleLeaderShipChange}
-            />
-          </div>
+          {formData.leadership && formData.leadership.map((item, i) => {
+              return (
+                <div key={i}>
+                <FormControl required variant="standard" sx={{ mr: 1, minWidth: 200 }} >
+                  <InputLabel id="leadership">Leadership {i+1}</InputLabel>
+                  <Select
+                    required
+                    labelId="leadership"
+                    id="leadership"
+                    name="leadership"
+                    label="leadership"
+                    value={item.leadershipId}
+                    onChange={(event) => handleLeaderShipChange(event, i)}
+                  >
+                    {users.map((item, i) => {
+                      return (
+                        <MenuItem key={i} value={item._id}>{item.name}</MenuItem>
+                    )})}
+                  </Select>
+                </FormControl>
+                {i>0 && 
+                    <IconButton aria-label="deleteLeaderShip" color="primary" 
+                      onClick={()=>DeleteLeaderShip(i)}
+                      sx={{ mt: 1.5 }}>
+                        <DeleteIcon />
+                    </IconButton>
+                  }
+                </div>
+              )
+          })}
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>
             Contact Info
           </Typography>
