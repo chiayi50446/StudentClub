@@ -62,14 +62,30 @@ export default function Profile({ match }) {
 
   }, [userId])
   
-    if (redirectToSignin) {
+  const showEdit = () =>{
+    if(!auth.isAuthenticated().user || !user)
+      return false;
+
+    if(user && user.name === 'admin'){
+      return false;
+    }
+    if(auth.isAuthenticated().user._id == user._id){
+      return true;
+    }
+    if(auth.isAuthenticated().user.isAdmin)
+      return true;
+    return false;
+  }
+
+  if (redirectToSignin) {
     return <Navigate to="/signin" state={{ from: location.pathname }} replace />;
       
-    }
-    if (auth.isAuthenticated()) {
+  }
+  if (auth.isAuthenticated()) {
     console.log( auth.isAuthenticated().user._id)
+    console.log( auth.isAuthenticated().user.isAdmin)
     console.log(user._id)
-    }
+  }
     return (
       <Container maxWidth="lg">
       <Paper className={classes.root} elevation={4}>
@@ -84,7 +100,7 @@ export default function Profile({ match }) {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={user.name} secondary={user.email}/> {
-             auth.isAuthenticated().user && auth.isAuthenticated().user._id == user._id &&
+             showEdit() &&
               (<ListItemSecondaryAction>
                 <Link to={"/user/edit/" + user._id}>
                   <IconButton aria-label="Edit" color="primary">
