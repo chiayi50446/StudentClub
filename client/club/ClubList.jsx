@@ -7,6 +7,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { list } from './api-club.js';
 import AddClub from './AddClub.jsx';
@@ -84,6 +85,7 @@ export default function ClubList() {
     }
 
     return (
+        <Container maxWidth="lg">
         <Paper className={classes.root} elevation={4}>
             <div className={classes.root}>
                 <Grid
@@ -151,5 +153,6 @@ export default function ClubList() {
                 ))}
             </Grid>
         </Paper>
+        </Container>
     );
 }

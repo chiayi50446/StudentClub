@@ -7,6 +7,7 @@ import List from '@mui/material/List'
 import {list} from './api-user.js'
 import { Link as RouterLink } from 'react-router-dom';
 import Link from '@mui/material/Link'
+import Container from '@mui/material/Container';
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemText from '@mui/material/ListItemText'
@@ -60,6 +61,7 @@ abortController.abort()
   
     const classes = useStyles()
 return (
+  <Container maxWidth="lg">
 <Paper className={classes.root} elevation={4}>
 <Typography variant="h6" className={classes.title}> 
 All Users
@@ -85,6 +87,7 @@ All Users
 })} 
 </List>
 </Paper>
+</Container>
 )
 }
 

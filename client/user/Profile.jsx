@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography'
 import Edit from '@mui/icons-material/Edit'
 import Person from '@mui/icons-material/Person'
 import Divider from '@mui/material/Divider'
+import Container from '@mui/material/Container';
 import DeleteUser from './DeleteUser'
 import auth from '../lib/auth-helper.js'
 import {read} from './api-user.js'
@@ -70,6 +71,7 @@ export default function Profile({ match }) {
     console.log(user._id)
     }
     return (
+      <Container maxWidth="lg">
       <Paper className={classes.root} elevation={4}>
         <Typography variant="h6" className={classes.title}>
           Profile
@@ -101,5 +103,6 @@ export default function Profile({ match }) {
           </ListItem>
         </List>
       </Paper>
+      </Container>
     )
   }
