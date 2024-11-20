@@ -59,6 +59,10 @@ export default function Signup() {
       setValues({ ...values, error: 'All fields are required' });
       return;
     }
+    if(values.name.toLocaleLowerCase() === "admin"){
+      setValues({...values, error: "user name cannot be 'admin'"})
+      return;
+    }
 
     // Create user object
     const user = {
