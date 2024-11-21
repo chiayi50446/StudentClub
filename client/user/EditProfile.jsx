@@ -67,7 +67,7 @@ export default function EditProfile({ match }) {
             if (data && data.error) {
                 setValues({...values, error: data.error})
             } else {
-                setValues({...values, name: data.name, email: data.email, isAdmin: data.isAdmin})
+                setValues({...values, name: data.name, email: data.email, isAdmin: data.isAdmin ?? false})
             }
         })
         return function cleanup(){
@@ -93,6 +93,7 @@ export default function EditProfile({ match }) {
             }
         })
     }
+    const clickCancel = () => {setValues({...values, userId: userId, redirectToProfile: true})}
     const handleChange = name => event => {
         setValues({...values, [name]: event.target.value, error:''})
     }
@@ -121,6 +122,7 @@ export default function EditProfile({ match }) {
             </CardContent>
             <CardActions className={classes.submit}>
                 <Button color="primary" variant="contained" onClick={clickSubmit} >Submit</Button>
+                <Button color="primary" variant="outlined" onClick={clickCancel} >Cancel</Button>
             </CardActions>
         </Card>
     )
