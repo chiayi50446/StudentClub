@@ -7,6 +7,7 @@ import helmet from 'helmet'
 import userRoutes from './routes/user.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import clubRoutes from './routes/club.routes.js'
+import eventRoutes from './routes/event.routes.js'
 import path from 'path'
 
 const app = express()
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', clubRoutes)
+app.use('/', eventRoutes)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
