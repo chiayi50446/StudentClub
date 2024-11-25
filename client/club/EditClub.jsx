@@ -64,7 +64,7 @@ export default function EditClub(props) {
         setError(data.error); // Set error if update fails
       } else {
         setOpen(false); // Close dialog on successful save
-        window.location.reload(); // Reload to reflect changes
+        props.updateClub(data)
       }
     }).catch((err) => {
       setError('Failed to update club. Please try again.');

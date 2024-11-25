@@ -14,8 +14,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
 
 const EventList = () => {
+    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -42,6 +45,10 @@ const EventList = () => {
         setEditingEvent(event);
         setUpdatedEvent(event); // Pre-fill the dialog with existing data
     };
+
+    const handleAddClick = () => {
+        navigate("/eventForm")
+    }
 
     // Handle edit dialog closing
     const handleCloseDialog = () => {
@@ -94,9 +101,22 @@ const EventList = () => {
 
     return (
         <Box sx={{ maxWidth: 600, margin: 'auto', p: 2 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-                Event Management
-            </Typography>
+            <ListItem alignItems="flex-start">
+                <ListItemText>
+                    <Typography variant="h5" sx={{ mb: 2 }}>
+                        Event Management
+                    </Typography>
+                </ListItemText>
+            <Button
+                variant="contained"
+                size="small"
+                sx={{ mt: 1 }}
+                startIcon={<AddIcon />}
+                onClick={() => handleAddClick()}
+            >
+                Add
+            </Button>
+            </ListItem>
             {events === null || events.length===0 ? (
                 <Typography variant="body1">No events found.</Typography>
             ) : (
@@ -108,14 +128,14 @@ const EventList = () => {
                                     primary={event.title}
                                     secondary={
                                         <>
-                                            <Typography variant="body2" color="textSecondary">
-                                                {new Date(event.date).toLocaleDateString()} | {event.location}
+                                            <Typography component="span" variant="body2" color="textSecondary">
+                                                {new Date(event.date).toLocaleDateString()} | {event.location}<br/>
                                             </Typography>
-                                            <Typography variant="body2" color="textSecondary">
-                                                Organizer: {event.organizer}
+                                            <Typography component="span" variant="body2" color="textSecondary">
+                                                Organizer: {event.organizer}<br/>
                                             </Typography>
                                             {event.description && (
-                                                <Typography variant="body2" color="textSecondary">
+                                                <Typography component="span" variant="body2" color="textSecondary">
                                                     {event.description}
                                                 </Typography>
                                             )}
