@@ -19,15 +19,18 @@ import PersonIcon from '@mui/icons-material/Person';
 import DeleteClub from './DeleteClub.jsx';
 import EditClub from './EditClub.jsx';
 import auth from '../lib/auth-helper.js'
+import Button from '@mui/material/Button';
+import {update} from '../user/api-user.js'
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
     const { clubId } = useParams();
     const [club, setClub] = useState(null); // Initializing club as null for better error handling
-    const [users, setUsers] = useState([]);
+    const [leaders, setLeaders] = useState([]);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        setUsers([]);
+        setLeaders([]);
         const abortController = new AbortController();
         const signal = abortController.signal;
 
@@ -40,13 +43,23 @@ export default function Club() {
             }
         });
 
+        readUser({
+            userId: auth.isAuthenticated().user._id
+        }, {t: jwt.token}, signal).then((data) => {
+            if (data && data.error) {
+                console.log(data.error);
+            } else {
+                setUser(data);
+            }
+        })
+
         return function cleanup() {
             abortController.abort(); // Cleanup on unmount
         };
     }, [clubId]);
 
     useEffect(() => {
-        setUsers([]);
+        setLeaders([]);
         if(club && club.leadership){
             club.leadership.map((item,i) => {
                 const abortController = new AbortController()
@@ -57,7 +70,7 @@ export default function Club() {
                     if (data && data.error) {
                         console.log(data.error);
                     } else {
-                        setUsers(oldArray => [...oldArray, data]);
+                        setLeaders(oldArray => [...oldArray, data]);
                     }
                 })
     
@@ -79,6 +92,45 @@ export default function Club() {
         );
     }
 
+    const handleJoinClub = () => {
+        const { clubList } = user;
+        clubList.push({clubId: clubId});
+
+        setUser((prevUser) => ({
+          ...prevUser,
+          clubList: clubList
+        }));
+        const userId = auth.isAuthenticated().user._id;
+        update({userId: userId}, {t: jwt.token}, user).then((data) => {
+            if (data && data.error) {
+                console.log(data.error)
+            } else {
+                setUser(data);
+                console.log(data)
+            }
+        })
+    }
+
+    const handleLeaveClub = () => {
+        const { clubList } = user;
+        const index = clubList.findIndex(obj => obj.clubId === clubId);
+        clubList.splice(index, 1);
+
+        setUser((prevUser) => ({
+          ...prevUser,
+          clubList: clubList
+        }));
+        const userId = auth.isAuthenticated().user._id;
+        update({userId: userId}, {t: jwt.token}, user).then((data) => {
+            if (data && data.error) {
+                console.log(data.error)
+            } else {
+                setUser(data);
+                console.log(data)
+            }
+        })
+    }
+
     return (
         <Container maxWidth="lg">
             <Paper elevation={4}>
@@ -93,6 +145,15 @@ export default function Club() {
                             alt={club.name}
                             src={club.pictureUri}
                         />
+                        <Grid>
+                            {auth.isAuthenticated() && <Button variant="contained" onClick={handleJoinClub}>
+                                Join Club
+                            </Button>}
+                            
+                            {auth.isAuthenticated() && <Button variant="contained" onClick={handleLeaveClub}>
+                                Leave Club
+                            </Button>}
+                        </Grid>
                     </Grid>
                     <Grid>
                         <div>
@@ -130,8 +191,8 @@ export default function Club() {
                                     <Typography sx={{ mt: 1 }} variant="h6" component="div">
                                         Leadership Info
                                     </Typography>
-                                    {users.length > 0 &&
-                                        users.map((item, index) => (
+                                    {leaders.length > 0 &&
+                                        leaders.map((item, index) => (
                                             <ListItem key={index}>
                                                 <ListItemIcon>
                                                     <PersonIcon />
