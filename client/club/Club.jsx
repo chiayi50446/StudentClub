@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { read } from './api-club.js';
 import {read as readUser} from '../user/api-user.js'
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -79,87 +80,89 @@ export default function Club() {
     }
 
     return (
-        <Paper elevation={4}>
-            <Grid container spacing={3}>
-                <Grid>
-                    <Box
-                        component="img"
-                        sx={{
-                            width: 350,
-                            maxWidth: { xs: 350, md: 250 },
-                        }}
-                        alt={club.name}
-                        src={club.pictureUri}
-                    />
-                </Grid>
-                <Grid>
-                    <div>
-                        <Grid
-                            container
-                            justifyContent="space-between"
-                            alignItems="center"
-                            flexDirection={{ xs: 'column', sm: 'row' }}
-                            sx={{ fontSize: '12px', margin: '5px' }}
-                            size={12}
-                        >
-                            <Grid sx={{ order: { xs: 2, sm: 1 } }}>
-                                <Typography variant="h4" inline="true">
-                                    {club.name}
-                                </Typography>
+        <Container maxWidth="lg">
+            <Paper elevation={4}>
+                <Grid container spacing={3}>
+                    <Grid>
+                        <Box
+                            component="img"
+                            sx={{
+                                width: 350,
+                                maxWidth: { xs: 350, md: 250 },
+                            }}
+                            alt={club.name}
+                            src={club.pictureUri}
+                        />
+                    </Grid>
+                    <Grid>
+                        <div>
+                            <Grid
+                                container
+                                justifyContent="space-between"
+                                alignItems="center"
+                                flexDirection={{ xs: 'column', sm: 'row' }}
+                                sx={{ fontSize: '12px', margin: '5px' }}
+                                size={12}
+                            >
+                                <Grid sx={{ order: { xs: 2, sm: 1 } }}>
+                                    <Typography variant="h4" inline="true">
+                                        {club.name}
+                                    </Typography>
+                                </Grid>
+                                <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
+                                    <EditClub club={club} updateClub={setClub}/>
+                                    <DeleteClub clubId={clubId} />
+                                </Grid>
                             </Grid>
-                            <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
-                                <EditClub club={club} updateClub={setClub}/>
-                                <DeleteClub clubId={clubId} />
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                        <ListItem>
-                            <ListItemText primary={club.description} />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary={`Status: ${club.status}`} />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary={`Type: ${club.type}`} />
-                        </ListItem>
-                        <Grid container spacing={2}>
-                            <Grid xs={12} md={6}>
-                                <Typography sx={{ mt: 1 }} variant="h6" component="div">
-                                    Leadership Info
-                                </Typography>
-                                {users.length > 0 &&
-                                    users.map((item, index) => (
-                                        <ListItem key={index}>
-                                            <ListItemIcon>
-                                                <PersonIcon />
-                                            </ListItemIcon>
-                                            <ListItemText primary={item.name} secondary={item.email} />
-                                        </ListItem>
-                                    ))}
-                            </Grid>
-                            <Grid xs={12} md={6}>
-                                <Typography sx={{ mt: 1 }} variant="h6" component="div">
-                                    Contact Info
-                                </Typography>
-                                {club.contactInfo &&
-                                    club.contactInfo.map((contact, index) => (
-                                        contact.uri && (
+                        </div>
+                        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                            <ListItem>
+                                <ListItemText primary={club.description} />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary={`Status: ${club.status}`} />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemText primary={`Type: ${club.type}`} />
+                            </ListItem>
+                            <Grid container spacing={2}>
+                                <Grid xs={12} md={6}>
+                                    <Typography sx={{ mt: 1 }} variant="h6" component="div">
+                                        Leadership Info
+                                    </Typography>
+                                    {users.length > 0 &&
+                                        users.map((item, index) => (
                                             <ListItem key={index}>
-                                                <ListItemButton>
-                                                    <ListItemIcon>
-                                                        {index === 0 ? <EmailIcon /> : index === 1 ? <TwitterIcon /> : <InstagramIcon />}
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={contact.uri} />
-                                                </ListItemButton>
+                                                <ListItemIcon>
+                                                    <PersonIcon />
+                                                </ListItemIcon>
+                                                <ListItemText primary={item.name} secondary={item.email} />
                                             </ListItem>
-                                        )
-                                    ))}
+                                        ))}
+                                </Grid>
+                                <Grid xs={12} md={6}>
+                                    <Typography sx={{ mt: 1 }} variant="h6" component="div">
+                                        Contact Info
+                                    </Typography>
+                                    {club.contactInfo &&
+                                        club.contactInfo.map((contact, index) => (
+                                            contact.uri && (
+                                                <ListItem key={index}>
+                                                    <ListItemButton>
+                                                        <ListItemIcon>
+                                                            {index === 0 ? <EmailIcon /> : index === 1 ? <TwitterIcon /> : <InstagramIcon />}
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={contact.uri} />
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            )
+                                        ))}
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </List>
+                        </List>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+        </Container>
     );
 }
