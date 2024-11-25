@@ -68,9 +68,9 @@ export default function Menu(){
               <Link to="/about">
                 <Button sx={{ p: 1 }} style={isActive(location, "/about")}>About</Button>
               </Link>
-              <Link to="/eventForm">
+              {/* <Link to="/eventForm">
                 <Button sx={{ p: 1 }} style={isActive(location, "/eventForm")}>EventForm</Button>
-              </Link>
+              </Link> */}
               <Link to="/eventList">
                 <Button sx={{ p: 1 }} style={isActive(location, "/eventList")}>EventList</Button>
               </Link>
@@ -142,11 +142,11 @@ export default function Menu(){
                     <Button fullWidth onClick={toggleDrawer(false)}>About</Button>
                   </Link>
                 </MenuItem>
-                <MenuItem>
+                {/* <MenuItem>
                   <Link to="/eventForm" style={{ width: '100%' }}>
                     <Button fullWidth onClick={toggleDrawer(false)}>EventForm</Button>
                   </Link>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem>
                   <Link to="/eventList" style={{ width: '100%' }}>
                     <Button fullWidth onClick={toggleDrawer(false)}>EventList</Button>

@@ -108,7 +108,7 @@ export default function Club() {
                                 </Typography>
                             </Grid>
                             <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
-                                <EditClub club={club} />
+                                <EditClub club={club} updateClub={setClub}/>
                                 <DeleteClub clubId={clubId} />
                             </Grid>
                         </Grid>

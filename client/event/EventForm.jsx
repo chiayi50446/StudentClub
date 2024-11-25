@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { createEvent } from './api-event.js'; // Import the createEvent function
 import { TextField, Button, Grid, Typography, Paper } from '@mui/material'; // Material UI components
+import { useNavigate } from 'react-router-dom';
 
-const EventForm = ({ onEventCreated }) => {
+const EventForm = () => {
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [location, setLocation] = useState('');
@@ -28,13 +30,13 @@ const EventForm = ({ onEventCreated }) => {
             console.log("Created event:", createdEvent); // Debug log
 
             if (createdEvent) {
-                onEventCreated(createdEvent); // Notify parent to update event list
                 setTitle('');
                 setDate('');
                 setLocation('');
                 setDescription('');
                 setOrganizer('');
                 setError(null); // Clear previous errors
+                navigate("/eventList")
             }
         } catch (err) {
             console.error('Error creating event:', err);
