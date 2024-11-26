@@ -94,10 +94,6 @@ const update = async (params, club, credentials) => {
       body: JSON.stringify(club),
     });
 
-    if (!response.ok) {
-      throw new Error(`Error updating club with ID ${params.clubId}`);
-    }
-
     return await response.json(); // Return the updated club data
   } catch (err) {
     console.error("Error updating club:", err);
@@ -116,10 +112,6 @@ const remove = async (params, credentials) => {
         Authorization: "Bearer " + credentials.t,
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`Error deleting club with ID ${params.clubId}`);
-    }
 
     return await response.json(); // Return the response of the delete operation
   } catch (err) {
