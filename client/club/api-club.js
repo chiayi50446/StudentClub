@@ -1,5 +1,5 @@
 // Function to create a new club
-const create = async (club) => {
+const create = async (club, credentials) => {
   try {
     // Send a POST request to create the club
     let response = await fetch("/api/clubs/", {
@@ -7,6 +7,7 @@ const create = async (club) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
       },
       body: JSON.stringify(club),
     });
@@ -81,13 +82,14 @@ const read = async (params, signal) => {
 };
 
 // Function to update an existing club's details
-const update = async (params, club) => {
+const update = async (params, club, credentials) => {
   try {
     let response = await fetch(`/api/clubs/${params.clubId}`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
       },
       body: JSON.stringify(club),
     });
@@ -104,13 +106,14 @@ const update = async (params, club) => {
 };
 
 // Function to remove a club (delete)
-const remove = async (params) => {
+const remove = async (params, credentials) => {
   try {
     let response = await fetch(`/api/clubs/${params.clubId}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        Authorization: "Bearer " + credentials.t,
       },
     });
 

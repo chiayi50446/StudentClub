@@ -16,14 +16,14 @@ export default function DeleteClub(props) {
   const [open, setOpen] = useState(false)
   const [redirect, setRedirect] = useState(false)
 
-//   const jwt = auth.isAuthenticated()
+  const jwt = auth.isAuthenticated()
   const clickButton = () => {
     setOpen(true)
   }
   const deleteClub = () => { 
     remove({
         clubId: props.clubId
-    }/*, {t: jwt.token}*/).then((data) => {
+    }, {t: jwt.token}).then((data) => {
       if (data && data.error) {
         console.log(data.error)
       } else {

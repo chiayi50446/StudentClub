@@ -19,8 +19,11 @@ import { update } from './api-club.js';
 import {list} from '../user/api-user.js';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import auth from '../lib/auth-helper.js'
 
 export default function EditClub(props) {
+  
+  const jwt = auth.isAuthenticated()
   const [club, setClub] = useState({});
 
   const [users, setUsers] = useState([])
@@ -59,7 +62,7 @@ export default function EditClub(props) {
 
   // Save updated club details
   const SaveClub = () => {
-    update({ clubId: props.club._id }, club).then((data) => {
+    update({ clubId: props.club._id }, club, {t: jwt.token}).then((data) => {
       if (data && data.error) {
         setError(data.error); // Set error if update fails
       } else {

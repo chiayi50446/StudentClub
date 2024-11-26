@@ -18,8 +18,10 @@ import {list} from '../user/api-user.js';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton'
+import auth from '../lib/auth-helper.js'
 
 export default function AddClub() {
+  const jwt = auth.isAuthenticated()
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState([])
   const [formData, setFormData] = useState({
@@ -144,7 +146,7 @@ export default function AddClub() {
     event.preventDefault();
 
     // Calling the create function to add a new club
-    create(formData).then((data) => {
+    create(formData, {t: jwt.token}).then((data) => {
       if (data && data.error) {
         // Handle error, show feedback to the user
         console.log(data.error);
