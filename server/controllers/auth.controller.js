@@ -42,7 +42,10 @@ const requireSignin = expressjwt({
 });
 
 const hasAuthorization = (req, res, next) => {
-  const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
+  const authorized =
+    req.profile &&
+    req.auth &&
+    (req.profile._id == req.auth._id || req.auth.isAdmin);
   if (!authorized) {
     return res.status("403").json({
       error: "User is not authorized",
@@ -61,25 +64,10 @@ const hasAdmin = (req, res, next) => {
   next();
 };
 
-const hasClubAdmin = (req, res, next) => {
-  const authorized =
-    req.profile &&
-    req.auth &&
-    (req.profile.leadership.some((x) => x.leadershipId == req.auth._id) ||
-      req.auth.isAdmin);
-  if (!authorized) {
-    return res.status("403").json({
-      error: "User is not authorized",
-    });
-  }
-  next();
-};
-
 export default {
   signin,
   signout,
   requireSignin,
   hasAuthorization,
   hasAdmin,
-  hasClubAdmin,
 };

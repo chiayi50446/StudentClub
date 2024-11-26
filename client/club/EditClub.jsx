@@ -20,6 +20,7 @@ import {list} from '../user/api-user.js';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import auth from '../lib/auth-helper.js'
+import Alert from '@mui/material/Alert';
 
 export default function EditClub(props) {
   
@@ -63,11 +64,15 @@ export default function EditClub(props) {
   // Save updated club details
   const SaveClub = () => {
     update({ clubId: props.club._id }, club, {t: jwt.token}).then((data) => {
-      if (data && data.error) {
-        setError(data.error); // Set error if update fails
-      } else {
-        setOpen(false); // Close dialog on successful save
-        props.updateClub(data)
+      if(data){
+        if (data.error) {
+          setError(data.error); // Set error if update fails
+        } else {
+          setOpen(false); // Close dialog on successful save
+          props.updateClub(data)
+        }
+      }else{
+        setError('Failed to update club. Please try again.'); // Set error if update fails
       }
     }).catch((err) => {
       setError('Failed to update club. Please try again.');
@@ -149,6 +154,9 @@ export default function EditClub(props) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
+        {error && 
+          <Alert severity="error">{error}</Alert>
+        }
         <DialogTitle>Edit Club</DialogTitle>
         <DialogContent>
           <DialogContentText>

@@ -12,8 +12,16 @@ router
 router
   .route("/api/clubs/:clubId")
   .get(clubController.read)
-  .put(authCtrl.requireSignin, authCtrl.hasClubAdmin, clubController.update)
-  .delete(authCtrl.requireSignin, authCtrl.hasClubAdmin, clubController.remove);
+  .put(
+    authCtrl.requireSignin,
+    clubController.hasClubAdmin,
+    clubController.update
+  )
+  .delete(
+    authCtrl.requireSignin,
+    clubController.hasClubAdmin,
+    clubController.remove
+  );
 
 router.param("clubId", clubController.clubByID);
 

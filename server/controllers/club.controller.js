@@ -76,4 +76,18 @@ const remove = async (req, res) => {
     });
   }
 };
-export default { create, clubByID, read, list, remove, update };
+
+const hasClubAdmin = (req, res, next) => {
+  const authorized =
+    req.profile &&
+    req.auth &&
+    (req.profile.leadership.some((x) => x.leadershipId == req.auth._id) ||
+      req.auth.isAdmin);
+  if (!authorized) {
+    return res.status("403").json({
+      error: "User is not club admin",
+    });
+  }
+  next();
+};
+export default { create, clubByID, read, list, remove, update, hasClubAdmin };
