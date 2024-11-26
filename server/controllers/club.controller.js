@@ -18,12 +18,13 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
+    const { clubList } = req.query;
     const query = {};
-    if (req.query) {
+    if (clubList) {
       query._id = { $in: req.query.clubList.split(",") };
     }
 
-    let clubs = await Club.find().select(
+    let clubs = await Club.find(query).select(
       "name description status type leadership pictureUri contactInfo created updated"
     );
     res.json(clubs);

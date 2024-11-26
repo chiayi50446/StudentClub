@@ -67,13 +67,15 @@ export default function Profile({ match }) {
   }, [userId])
 
   useEffect(() => {
+    setClubList([]);
     const abortController = new AbortController()
     const signal = abortController.signal
-    if(user.clubList){
-
-      const query = user.clubList.map(element => {
+    if(user.clubList && user.clubList.length > 0){
+      const query = {
+        clubList: user.clubList.map(element => {
         return element.clubId
-      });
+      })
+      }
 
       list(signal, query).then((data) => {
         if (data && data.error) {
@@ -151,7 +153,7 @@ export default function Profile({ match }) {
             Added clubs
           </Typography>
           {clubList && clubList.map((item, i) => { 
-            var color = item.status === "active" ? '#4caf50' : item.status === "inactive" ? '#ffc107' : '#607d8b';
+            var color = item.status === "active" ? '#4caf50' : item.status === "inactive" ? '#607d8b' : '#ffc107';
             return (
             <ListItem
               key={i}

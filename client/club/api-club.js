@@ -34,7 +34,13 @@ const create = async (club) => {
 // Function to list all clubs
 const list = async (signal, query) => {
   try {
-    let response = await fetch(`/api/clubs?clubList=${query}`, {
+    let uri = "/api/clubs";
+    if (query) {
+      Object.entries(query).map(([key, value]) => {
+        uri += `?${key}=${value}`;
+      });
+    }
+    let response = await fetch(uri, {
       method: "GET",
       signal: signal,
     });
