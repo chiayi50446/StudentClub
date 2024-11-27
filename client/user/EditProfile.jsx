@@ -13,6 +13,22 @@ import auth from '../lib/auth-helper.js'
 import {read, update} from './api-user.js'
 import {Navigate} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid2';
+import Resizer from "react-image-file-resizer";
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 const useStyles = makeStyles(theme => ({
     card: {
         maxWidth: 600,
@@ -54,6 +70,7 @@ export default function EditProfile({ match }) {
         name: '',
         password: '',
         email: '',
+        pictureUri: '',
         isAdmin: false,
         open: false,
         error: '',
@@ -67,7 +84,7 @@ export default function EditProfile({ match }) {
             if (data && data.error) {
                 setValues({...values, error: data.error})
             } else {
-                setValues({...values, name: data.name, email: data.email, isAdmin: data.isAdmin ?? false})
+                setValues({...values, name: data.name, email: data.email, pictureUri: data.pictureUri, isAdmin: data.isAdmin ?? false})
             }
         })
         return function cleanup(){
@@ -83,6 +100,7 @@ export default function EditProfile({ match }) {
             name: values.name || undefined,
             email: values.email || undefined,
             password: values.password || undefined,
+            pictureUri: values.pictureUri,
             isAdmin: values.isAdmin
         }
         update({userId: userId}, {t: jwt.token}, user).then((data) => {
@@ -93,6 +111,27 @@ export default function EditProfile({ match }) {
             }
         })
     }
+    const handlePictureUpload = async (event) => {
+        const file = event.target.files[0];
+        if(!file.type.startsWith('image/')){
+          return;
+        }
+        await resizeFile(file);
+      };
+    
+      const resizeFile = (file) =>
+        new Promise((resolve) => {
+          Resizer.imageFileResizer(
+            file, 100, 100, "JPEG", 30, 0,
+            (uri) => {
+              setValues((prevFormData) => ({
+                ...prevFormData,
+                pictureUri: uri
+              }));
+            },
+            "base64"
+          );
+        });
     const clickCancel = () => {setValues({...values, userId: userId, redirectToProfile: true})}
     const handleChange = name => event => {
         setValues({...values, [name]: event.target.value, error:''})
@@ -113,6 +152,30 @@ export default function EditProfile({ match }) {
                 <TextField id="name" label="Name" className={classes.textField} value={values.name} onChange={handleChange('name')} margin="normal"/><br/>
                 <TextField id="email" type="email" label="Email" className={classes.textField} value={values.email} onChange={handleChange('email')} margin="normal"/><br/>
                 <TextField id="password" type="password" label="Password" className={classes.textField} value={values.password} onChange={handleChange('password')} margin="normal"/><br/>
+                <Grid container spacing={3} style={{ justifyContent: 'center' }}>
+                  <Grid>
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      tabIndex={-1}
+                      startIcon={<CloudUploadIcon />}
+                      sx={{ mt: 2 }}
+                    >
+                      Upload files
+                      <VisuallyHiddenInput
+                        type="file"
+                        onChange={handlePictureUpload}
+                        multiple
+                        accept='image/*'
+                      />
+        
+                    </Button>
+                  </Grid>
+                  <Grid>
+                    {values.pictureUri && <img src={values.pictureUri} width='40' height='40' style={{marginTop: '12px'}}/>}
+                  </Grid>
+                </Grid>
                 {auth.isAuthenticated().user.isAdmin && 
                 <FormControlLabel className={classes.checkbox} control={<Checkbox name="isAdmin" checked={values.isAdmin} onChange={handleCheckboxChange}/>}  label="Is Admin" />}
                 <br/> 

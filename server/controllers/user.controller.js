@@ -20,10 +20,12 @@ const list = async (req, res) => {
 
     const clubId = req.query.clubId;
     if (clubId) {
-      query.clubList = { $elemMatch: { clubId: clubId } }
+      query.clubList = { $elemMatch: { clubId: clubId } };
     }
 
-    let users = await User.find(query).select("name email updated created");
+    let users = await User.find(query).select(
+      "name email pictureUri updated created"
+    );
     res.json(users);
   } catch (err) {
     return res.status(400).json({

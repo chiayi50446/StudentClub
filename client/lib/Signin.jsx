@@ -54,7 +54,6 @@ export default function Signin(props) {
       email: values.email || undefined,
       password: values.password || undefined
     }
-console.log(user)
     signin(user).then((data) => {
       if (data.error) {
         setValues({ ...values, error: data.error})

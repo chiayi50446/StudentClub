@@ -38,7 +38,6 @@ export default function AddClub(props) {
   const jwt = auth.isAuthenticated()
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState([])
-  const [imageName, setImageName] = useState("");
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -94,7 +93,6 @@ export default function AddClub(props) {
         { name: 'Instagram', status: false, uri: '' }
       ]
     });
-    setImageName('')
     handleClose();
   };
 

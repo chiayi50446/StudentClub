@@ -96,7 +96,7 @@ export default function Profile({ match }) {
   }, [user])
   
   const showEdit = () =>{
-    if(!auth.isAuthenticated().user || !user)
+    if(!auth.isAuthenticated().user || !user._id)
       return false;
 
     if(user && user.name === 'admin'){
@@ -128,9 +128,7 @@ export default function Profile({ match }) {
         <List dense>
           <ListItem>
             <ListItemAvatar>
-              <Avatar>
-                <Person/>
-              </Avatar>
+              <Avatar src={user.pictureUri} />
             </ListItemAvatar>
             <ListItemText primary={user.name} secondary={user.email}/> {
              showEdit() &&

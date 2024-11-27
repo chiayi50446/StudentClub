@@ -42,7 +42,6 @@ export default function EditClub(props) {
   const jwt = auth.isAuthenticated()
   const [club, setClub] = useState({});
 
-  const [imageName, setImageName] = useState("");
   const [users, setUsers] = useState([])
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(null); // State to handle errors
@@ -81,7 +80,6 @@ export default function EditClub(props) {
     if(!file.type.startsWith('image/')){
       return;
     }
-    setImageName(file.name)
     await resizeFile(file);
   };
 

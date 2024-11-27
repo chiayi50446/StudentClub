@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
       },
     },
   ],
+  pictureUri: {
+    type: String,
+    trim: true,
+  },
   isAdmin: {
     type: Boolean,
     trim: true,

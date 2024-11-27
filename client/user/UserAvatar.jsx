@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar'
@@ -6,9 +6,11 @@ import Person from '@mui/icons-material/Person'
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button'
 import auth from '../lib/auth-helper'
+import {read} from './api-user.js'
 
 export default function UserAvatar() {
     const navigate = useNavigate();
+    const [user, setUser] = useState({})
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -17,18 +19,31 @@ export default function UserAvatar() {
     const handleClose = () => {
       setAnchorEl(null);
     };
-    const handleMode = () => () => {
-      handleClose();
-    };
+    useEffect(() => {
+      const abortController = new AbortController()
+      const signal = abortController.signal
+  
+      read({
+        userId: auth.isAuthenticated().user._id
+      }, signal).then((data) => {
+        if (data) {
+          setUser(data)
+        }
+      })
+  
+      return function cleanup(){
+        abortController.abort()
+      }
+  
+    }, [])
     return (
       <>
         <Avatar
           data-screenshot="toggle-mode"
           onClick={handleClick}
           size="small"
-        >
-          <Person/>
-        </Avatar>
+          src={user.pictureUri}
+        />
         <Menu
           anchorEl={anchorEl}
           id="account-menu"
