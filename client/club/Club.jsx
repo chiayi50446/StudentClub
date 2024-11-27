@@ -139,8 +139,8 @@ export default function Club() {
                         <Box
                             component="img"
                             sx={{
-                                width: 350,
-                                maxWidth: { xs: 350, md: 250 },
+                                width: 200,
+                                maxWidth: { xs: 200, md: 200 },
                             }}
                             alt={club.name}
                             src={club.pictureUri}

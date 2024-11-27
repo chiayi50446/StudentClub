@@ -21,12 +21,28 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import auth from '../lib/auth-helper.js'
 import Alert from '@mui/material/Alert';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+import Resizer from "react-image-file-resizer";
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function EditClub(props) {
   
   const jwt = auth.isAuthenticated()
   const [club, setClub] = useState({});
 
+  const [imageName, setImageName] = useState("");
   const [users, setUsers] = useState([])
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(null); // State to handle errors
@@ -60,6 +76,28 @@ export default function EditClub(props) {
     setOpen(false);
     setError(null); // Clear any error on close
   };
+  const handlePictureUpload = async (event) => {
+    const file = event.target.files[0];
+    if(!file.type.startsWith('image/')){
+      return;
+    }
+    setImageName(file.name)
+    await resizeFile(file);
+  };
+
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file, 200, 200, "JPEG", 50, 0,
+        (uri) => {
+          setClub((prevFormData) => ({
+            ...prevFormData,
+            pictureUri: uri
+          }));
+        },
+        "base64"
+      );
+    });
 
   // Save updated club details
   const SaveClub = () => {
@@ -224,18 +262,30 @@ export default function EditClub(props) {
           </FormControl>
 
           {/* Picture Uri */}
-          <TextField
-            required
-            margin="dense"
-            id="pictureUri"
-            name="pictureUri"
-            value={club.pictureUri || ''}
-            label="Picture Uri"
-            fullWidth
-            variant="standard"
-            onChange={handleChange}
-          />
+          <Grid container spacing={3}>
+            <Grid>
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{ mt: 2 }}
+              >
+                Upload files
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={handlePictureUpload}
+                  multiple
+                  accept='image/*'
+                />
 
+              </Button>
+            </Grid>
+            <Grid>
+              <img src={club.pictureUri} width='40' height='40' style={{marginTop: '12px'}}/>
+            </Grid>
+          </Grid>
           {/* Leadership Info */}
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>
             Leadership Info

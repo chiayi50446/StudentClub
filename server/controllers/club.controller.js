@@ -3,13 +3,10 @@ import extend from "lodash/extend.js";
 import errorHandler from "./error.controller.js";
 
 const create = async (req, res) => {
-  console.log(req.body);
   const club = new Club(req.body);
   try {
     await club.save();
-    return res.status(200).json({
-      message: "Successfully create club!",
-    });
+    res.json(club);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),

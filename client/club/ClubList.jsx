@@ -103,7 +103,7 @@ export default function ClubList() {
                     </Grid>
                     <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
                         <Grid>
-                            <AddClub />
+                            <AddClub setClubList={setClubList}/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -128,7 +128,7 @@ export default function ClubList() {
             <Grid container spacing={3}>
                 {clubList.map((item, i) => (
                     <Grid key={i}>
-                        <Card className={classes.card}>
+                        <Card className={classes.card} sx={{ width: '200px' }}>
                             <CardMedia
                                 component="img"
                                 alt={item.name}
