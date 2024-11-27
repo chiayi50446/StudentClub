@@ -16,7 +16,14 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find().select("name email updated created");
+    const query = {};
+
+    const clubId = req.query.clubId;
+    if (clubId) {
+      query.clubList = { $elemMatch: { clubId: clubId } }
+    }
+
+    let users = await User.find(query).select("name email updated created");
     res.json(users);
   } catch (err) {
     return res.status(400).json({

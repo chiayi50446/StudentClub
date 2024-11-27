@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import { read } from './api-club.js';
 import {read as readUser} from '../user/api-user.js'
+import {list as listUser} from '../user/api-user.js'
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import List from '@mui/material/List';
@@ -16,6 +17,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
+import Alert from '@mui/material/Alert';
 import DeleteClub from './DeleteClub.jsx';
 import EditClub from './EditClub.jsx';
 import auth from '../lib/auth-helper.js'
@@ -28,9 +30,14 @@ export default function Club() {
     const [club, setClub] = useState(null); // Initializing club as null for better error handling
     const [leaders, setLeaders] = useState([]);
     const [user, setUser] = useState(null);
+    const [clubAdmin, setClubAdmin] = useState(false);
+    const [inClub, setInClub] = useState(false);
+    const [error, setError] = useState(null); // State to handle errors
+    const [members, setMembers] = useState([]);
 
     useEffect(() => {
         setLeaders([]);
+        setMembers([]);
         const abortController = new AbortController();
         const signal = abortController.signal;
 
@@ -43,15 +50,43 @@ export default function Club() {
             }
         });
 
-        readUser({
-            userId: auth.isAuthenticated().user._id
-        }, {t: jwt.token}, signal).then((data) => {
-            if (data && data.error) {
-                console.log(data.error);
-            } else {
-                setUser(data);
-            }
-        })
+        if(auth.isAuthenticated()){
+            readUser({
+                userId: auth.isAuthenticated().user._id
+            }, signal).then((data) => {
+                if(data){
+                    if (data.error) {
+                        console.log(data.error);
+                    } else {
+                        setUser(data);
+        
+                        // Check in club or not
+                        if(data.clubList){
+                            const index = data.clubList.findIndex(obj => obj.clubId === clubId);
+                            if(index >= 0){
+                                setInClub(true);
+                            }
+                        }
+                    }
+                }else{
+                    setError('Failed to get login user.');
+                }
+                
+            });
+        }
+
+        // Get members
+        const query = {clubId: clubId}
+        listUser(signal, query).then((data) => {
+        if (data && data.error) {
+            console.log(data.error);
+            setError('Failed to load clubs. Please try again later.');
+        } else {
+            setMembers(data);
+        }
+        setLoading(false); // End loading state once the data is fetched
+        }).catch(() => {
+        });
 
         return function cleanup() {
             abortController.abort(); // Cleanup on unmount
@@ -60,17 +95,22 @@ export default function Club() {
 
     useEffect(() => {
         setLeaders([]);
+        setClubAdmin(false);
+
         if(club && club.leadership){
             club.leadership.map((item,i) => {
                 const abortController = new AbortController()
                 const signal = abortController.signal
                 readUser({
                     userId: item.leadershipId
-                }, {t: jwt.token}, signal).then((data) => {
+                }, signal).then((data) => {
                     if (data && data.error) {
                         console.log(data.error);
                     } else {
                         setLeaders(oldArray => [...oldArray, data]);
+                        if(user && user._id==item.leadershipId){
+                            setClubAdmin(true);
+                        }
                     }
                 })
     
@@ -106,12 +146,18 @@ export default function Club() {
                 console.log(data.error)
             } else {
                 setUser(data);
+                setInClub(true);
                 console.log(data)
             }
         })
     }
 
     const handleLeaveClub = () => {
+        console.log("clubAdmin:"+clubAdmin);
+        if(clubAdmin){
+            setError("Club leadership can't leave club")
+            return;
+        }
         const { clubList } = user;
         const index = clubList.findIndex(obj => obj.clubId === clubId);
         clubList.splice(index, 1);
@@ -126,6 +172,7 @@ export default function Club() {
                 console.log(data.error)
             } else {
                 setUser(data);
+                setInClub(false);
                 console.log(data)
             }
         })
@@ -146,13 +193,14 @@ export default function Club() {
                             src={club.pictureUri}
                         />
                         <Grid>
-                            {auth.isAuthenticated() && <Button variant="contained" onClick={handleJoinClub}>
+                            {auth.isAuthenticated() && !inClub && !auth.isAuthenticated().user.isAdmin && <Button variant="contained" onClick={handleJoinClub}>
                                 Join Club
                             </Button>}
                             
-                            {auth.isAuthenticated() && <Button variant="contained" onClick={handleLeaveClub}>
+                            {auth.isAuthenticated() && inClub && !auth.isAuthenticated().user.isAdmin && <Button variant="contained" onClick={handleLeaveClub}>
                                 Leave Club
                             </Button>}
+                            {error && <Alert severity="error">{error}</Alert>}
                         </Grid>
                     </Grid>
                     <Grid>
@@ -170,10 +218,11 @@ export default function Club() {
                                         {club.name}
                                     </Typography>
                                 </Grid>
+                                {auth.isAuthenticated() && (clubAdmin || auth.isAuthenticated().user.isAdmin) &&
                                 <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
                                     <EditClub club={club} updateClub={setClub}/>
                                     <DeleteClub clubId={clubId} />
-                                </Grid>
+                                </Grid>}
                             </Grid>
                         </div>
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>

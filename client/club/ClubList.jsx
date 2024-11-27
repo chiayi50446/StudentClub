@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { list } from './api-club.js';
 import AddClub from './AddClub.jsx';
 import CircularProgress from '@mui/material/CircularProgress'; // Added for loading indicator
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -144,9 +145,11 @@ export default function ClubList() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button href={"/club/" + item._id} size="small">
-                                    Learn More
-                                </Button>
+                                <Link to={"/club/" + item._id}>
+                                    <Button size="small">
+                                        Learn More
+                                    </Button>
+                                </Link>
                             </CardActions>
                         </Card>
                     </Grid>

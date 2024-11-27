@@ -52,7 +52,7 @@ export default function Profile({ match }) {
 
     read({
       userId: userId
-    }, {t: jwt.token}, signal).then((data) => {
+    }, signal).then((data) => {
       if (data && data.error) {
         setRedirectToSignin(true)
       } else {
