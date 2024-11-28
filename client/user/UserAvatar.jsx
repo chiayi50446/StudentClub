@@ -18,6 +18,7 @@ export default function UserAvatar() {
     };
     const handleClose = () => {
       setAnchorEl(null);
+      document.activeElement?.blur();
     };
     useEffect(() => {
       const abortController = new AbortController()
@@ -50,6 +51,7 @@ export default function UserAvatar() {
           aria-modal="true"
           open={open}
           onClose={handleClose}
+          disableRestoreFocus
           onClick={handleClose}
           slotProps={{
             paper: {
