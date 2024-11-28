@@ -23,6 +23,8 @@ import EditClub from './EditClub.jsx';
 import auth from '../lib/auth-helper.js'
 import Button from '@mui/material/Button';
 import {update} from '../user/api-user.js'
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
@@ -34,6 +36,7 @@ export default function Club() {
     const [inClub, setInClub] = useState(false);
     const [error, setError] = useState(null); // State to handle errors
     const [members, setMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLeaders([]);
@@ -45,9 +48,11 @@ export default function Club() {
             if (data && data.error) {
                 console.log(data.error);
                 setClub(null); // Set club to null if there's an error
+                setError('Failed to load users. Please try again later.');
             } else {
                 setClub(data); // Update the club state with the fetched data
             }
+            setLoading(false);
         });
 
         if(auth.isAuthenticated()){
@@ -80,7 +85,7 @@ export default function Club() {
         listUser(signal, query).then((data) => {
         if (data && data.error) {
             console.log(data.error);
-            setError('Failed to load clubs. Please try again later.');
+            setError('Failed to load users. Please try again later.');
         } else {
             setMembers(data);
         }
@@ -120,17 +125,6 @@ export default function Club() {
             })
         }
     }, [club]);
-
-    // If club data is null or not loaded yet, render loading or error message
-    if (club === null) {
-        return (
-            <Paper elevation={4}>
-                <Typography variant="h5" sx={{ textAlign: 'center', padding: 2 }}>
-                    Unable to load club details. Please try again later.
-                </Typography>
-            </Paper>
-        );
-    }
 
     const handleJoinClub = () => {
         const { clubList } = user;
@@ -186,6 +180,14 @@ export default function Club() {
     return (
         <Container maxWidth="lg">
             <Paper elevation={4}>
+                {error && <Alert severity="error">{error}</Alert>}
+                <Backdrop
+                    sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={loading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+                {club &&
                 <Grid container spacing={3}>
                     <Grid>
                         <Box
@@ -205,7 +207,6 @@ export default function Club() {
                             {auth.isAuthenticated() && inClub && !auth.isAuthenticated().user.isAdmin && <Button variant="contained" onClick={handleLeaveClub}>
                                 Leave Club
                             </Button>}
-                            {error && <Alert severity="error">{error}</Alert>}
                         </Grid>
                     </Grid>
                     <Grid>
@@ -220,7 +221,7 @@ export default function Club() {
                             >
                                 <Grid sx={{ order: { xs: 2, sm: 1 } }}>
                                     <Typography variant="h4" inline="true">
-                                        {club.name}
+                                            {club && club.name}
                                     </Typography>
                                 </Grid>
                                 {auth.isAuthenticated() && (clubAdmin || auth.isAuthenticated().user.isAdmin) &&
@@ -232,13 +233,13 @@ export default function Club() {
                         </div>
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                             <ListItem>
-                                <ListItemText primary={club.description} />
+                                    <ListItemText primary={club && club.description} />
                             </ListItem>
                             <ListItem>
-                                <ListItemText primary={`Status: ${club.status}`} />
+                                    <ListItemText primary={`Status: ${club && club.status}`} />
                             </ListItem>
                             <ListItem>
-                                <ListItemText primary={`Type: ${club.type}`} />
+                                    <ListItemText primary={`Type: ${club && club.type}`} />
                             </ListItem>
                             <Grid container spacing={2}>
                                 <Grid xs={12} md={6}>
@@ -291,6 +292,7 @@ export default function Club() {
                         </List>
                     </Grid>
                 </Grid>
+                }
             </Paper>
         </Container>
     );
