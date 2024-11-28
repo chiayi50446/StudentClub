@@ -135,6 +135,9 @@ export default function Club() {
     const handleJoinClub = () => {
         const { clubList } = user;
         clubList.push({clubId: clubId});
+        
+        // Add in members list
+        setMembers((prevMembers) => [...prevMembers, user]);
 
         setUser((prevUser) => ({
           ...prevUser,
@@ -153,14 +156,16 @@ export default function Club() {
     }
 
     const handleLeaveClub = () => {
-        console.log("clubAdmin:"+clubAdmin);
-        if(clubAdmin){
-            setError("Club leadership can't leave club")
-            return;
-        }
+        // if(clubAdmin){
+        //     setError("Club leadership can't leave club")
+        //     return;
+        // }
         const { clubList } = user;
         const index = clubList.findIndex(obj => obj.clubId === clubId);
         clubList.splice(index, 1);
+
+        // Remove from members list
+        setMembers((prevMembers) => prevMembers.filter((member) => member._id !== user._id));
 
         setUser((prevUser) => ({
           ...prevUser,
@@ -266,6 +271,20 @@ export default function Club() {
                                                     </ListItemButton>
                                                 </ListItem>
                                             )
+                                        ))}
+                                </Grid>
+                                <Grid xs={12} md={6}>
+                                    <Typography sx={{ mt: 1 }} variant="h6" component="div">
+                                        Member List
+                                    </Typography>
+                                    {members.length > 0 &&
+                                        members.map((item, index) => (
+                                            <ListItem key={index}>
+                                                <ListItemIcon>
+                                                    <PersonIcon />
+                                                </ListItemIcon>
+                                                <ListItemText primary={item.name} secondary={item.email} />
+                                            </ListItem>
                                         ))}
                                 </Grid>
                             </Grid>

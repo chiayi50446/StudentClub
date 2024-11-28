@@ -80,7 +80,7 @@ export default function EditProfile({ match }) {
     useEffect(() => {
         const abortController = new AbortController()
         const signal = abortController.signal
-        read({userId: userId}, {t: jwt.token}, signal).then((data) => {
+        read({userId: userId}, signal).then((data) => {
             if (data && data.error) {
                 setValues({...values, error: data.error})
             } else {
@@ -94,6 +94,10 @@ export default function EditProfile({ match }) {
     const clickSubmit = () => {
         if(values.name.toLocaleLowerCase() === "admin"){
             setValues({...values, error: "user name cannot be 'admin'"})
+            return;
+        }
+        if(values.email.toLocaleLowerCase() === "admin@admin.com"){
+            setValues({...values, error: "user email cannot be 'admin@admin.com'"})
             return;
         }
         const user = {
