@@ -101,6 +101,7 @@ export default function Club() {
     useEffect(() => {
         setLeaders([]);
         setClubAdmin(false);
+        const userId = auth.isAuthenticated().user._id;
 
         if(club && club.leadership){
             club.leadership.map((item,i) => {
@@ -113,7 +114,7 @@ export default function Club() {
                         console.log(data.error);
                     } else {
                         setLeaders(oldArray => [...oldArray, data]);
-                        if(user && user._id==item.leadershipId){
+                        if(userId==item.leadershipId && !clubAdmin){
                             setClubAdmin(true);
                         }
                     }

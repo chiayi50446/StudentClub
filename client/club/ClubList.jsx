@@ -13,6 +13,7 @@ import { list } from './api-club.js';
 import AddClub from './AddClub.jsx';
 import CircularProgress from '@mui/material/CircularProgress'; // Added for loading indicator
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import auth from '../lib/auth-helper.js'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -102,11 +103,13 @@ export default function ClubList() {
                             All Clubs
                         </Typography>
                     </Grid>
-                    <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
-                        <Grid>
-                            <AddClub setClubList={setClubList}/>
+                    {auth.isAuthenticated() && auth.isAuthenticated().user.isAdmin &&
+                        <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
+                            <Grid>
+                                <AddClub setClubList={setClubList}/>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    }
                 </Grid>
             </div>
 

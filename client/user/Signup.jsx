@@ -28,6 +28,10 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontSize: 18,
   },
+  actions: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));
 
 export default function Signup() {
@@ -127,7 +131,7 @@ export default function Signup() {
             margin="normal"
           />
         </CardContent> 
-        <CardActions>
+        <CardActions className={classes.actions}>
           {/* Changed button type to 'submit' */}
           <Button 
             color="primary" 

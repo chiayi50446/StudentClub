@@ -109,7 +109,6 @@ export default function AddClub(props) {
     if(!file.type.startsWith('image/')){
       return;
     }
-    setImageName(file.name)
     await resizeFile(file);
   };
 
