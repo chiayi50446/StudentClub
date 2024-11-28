@@ -221,7 +221,7 @@ export default function Club() {
                             >
                                 <Grid sx={{ order: { xs: 2, sm: 1 } }}>
                                     <Typography variant="h4" inline="true">
-                                            {club && club.name}
+                                        {club.name}
                                     </Typography>
                                 </Grid>
                                 {auth.isAuthenticated() && (clubAdmin || auth.isAuthenticated().user.isAdmin) &&
@@ -233,13 +233,13 @@ export default function Club() {
                         </div>
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                             <ListItem>
-                                    <ListItemText primary={club && club.description} />
+                                <ListItemText primary={club.description} />
                             </ListItem>
                             <ListItem>
-                                    <ListItemText primary={`Status: ${club && club.status}`} />
+                                <ListItemText primary={`Status: ${club.status}`} />
                             </ListItem>
                             <ListItem>
-                                    <ListItemText primary={`Type: ${club && club.type}`} />
+                                <ListItemText primary={`Type: ${club.type}`} />
                             </ListItem>
                             <Grid container spacing={2}>
                                 <Grid xs={12} md={6}>
