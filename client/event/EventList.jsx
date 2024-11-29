@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 
+
 const EventList = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
@@ -24,6 +25,8 @@ const EventList = () => {
     const [error, setError] = useState(null);
     const [editingEvent, setEditingEvent] = useState(null); // Event being edited
     const [updatedEvent, setUpdatedEvent] = useState({}); // Updated event data
+    
+
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -50,6 +53,12 @@ const EventList = () => {
         navigate("/eventForm")
     }
 
+    const handleRateEvent = () => {
+        navigate("/eventRating")
+
+    }
+
+
     // Handle edit dialog closing
     const handleCloseDialog = () => {
         setEditingEvent(null);
@@ -70,6 +79,8 @@ const EventList = () => {
         }
     };
 
+    
+   
     // Handle delete event
     const handleDeleteEvent = async (eventId) => {
         try {
@@ -99,7 +110,31 @@ const EventList = () => {
         );
     }
 
+    
+
+
+    // const calculateAverageRating = (ratings) => {
+    //     if (ratings.length === 0) return 0;
+    //     const totalRating = ratings.reduce((acc, rating) => acc + rating.rating, 0);
+    //     return (totalRating / ratings.length).toFixed(1);
+    //   };
+    
+    //   return (
+    //     <div>
+    //       {events.map(event => (
+    //         <div key={event._id}>
+    //           <h3>{event.name}</h3>
+    //           <p>{event.description}</p>
+    //           <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+    //           <p>Average Rating: {calculateAverageRating(event.ratings)} / 5</p>
+    //           <EventRating eventId={event._id} />
+    //         </div>
+    //       ))}
+    //     </div>
+    //   );
+
     return (
+
         <Box sx={{ maxWidth: 600, margin: 'auto', p: 2 }}>
             <ListItem alignItems="flex-start">
                 <ListItemText>
@@ -139,6 +174,13 @@ const EventList = () => {
                                                     {event.description}
                                                 </Typography>
                                             )}
+                                          
+                                          {event.rating && event.rating.map((item, i) => {
+                                                <Typography component="span" variant="body2" color="textSecondary">
+                                                    {event.description}
+                                                </Typography>
+                                            })}
+
                                         </>
                                     }
                                 />
@@ -158,6 +200,15 @@ const EventList = () => {
                                 >
                                     Delete
                                 </Button>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    size="small"
+                                    onClick={() => handleRateEvent(event)}
+                                >
+                                   Rate
+                                </Button>
+            
                             </ListItem>
                             <Divider component="li" />
                         </React.Fragment>
@@ -232,5 +283,7 @@ const EventList = () => {
         </Box>
     );
 };
+
+
 
 export default EventList;

@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 
 const eventSchema = new mongoose.Schema(
@@ -37,6 +38,7 @@ const eventSchema = new mongoose.Schema(
             required: false, // Optional field
             trim: true
         },
+     
         created: {
             type: Date,
             default: Date.now
@@ -44,6 +46,7 @@ const eventSchema = new mongoose.Schema(
         updated: {
             type: Date
         }
+
     },
     {
         timestamps: true, // Automatically add `createdAt` and `updatedAt` fields
@@ -68,6 +71,13 @@ eventSchema.pre('save', function (next) {
     next();
 });
 
-const Event = mongoose.model('Event', eventSchema);
+const RatingSchema = new mongoose.Schema({
+    eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
+    user: { type: String, required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+});
+
+
+const Event = mongoose.model('Event','Rating', eventSchema,RatingSchema);
 
 export default Event;

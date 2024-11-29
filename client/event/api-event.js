@@ -62,10 +62,24 @@ export const deleteEvent = async (eventId) => {
     }
 };
 
+
 // Function to list all events
 export const listEvents = async (signal) => {
     try {
         const data = await apiRequest('/api/events', 'GET', null, signal);
+        console.log('Fetched events:', data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        return null;
+    }
+};
+
+
+// Function to rate  events
+export const rateEvents = async (signal) => {
+    try {
+        const data = await apiRequest('/api/events/rating', 'POST', null, signal);
         console.log('Fetched events:', data);
         return data;
     } catch (error) {

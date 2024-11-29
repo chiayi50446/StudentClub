@@ -92,4 +92,20 @@ const remove = async (req, res) => {
     }
 };
 
-export default { create, list, eventByID, read, update, remove };
+// Rate an event
+const rateEvent = async (req, res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+  
+    const event = await Event.findById(id);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+  
+    event.ratings.push(rating);
+    await event.save();
+  
+    res.json({ message: 'Rating added', averageRating: event.getAverageRating() });
+  };
+
+
+
+export default { create, list, eventByID, read, update, remove, rateEvent };
