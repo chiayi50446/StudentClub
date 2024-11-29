@@ -1,31 +1,29 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './core/Home' 
-import Users from './user/Users.jsx'
-import Signup from './user/Signup.jsx'
-import Signin from './lib/Signin.jsx'
-import Profile from './user/Profile.jsx'
-import PrivateRoute from './lib/PrivateRoute.jsx'
-import EditProfile from './user/EditProfile.jsx'
-import Menu from './core/Menu' 
-import ClubList from './club/ClubList.jsx';
-import Club from './club/Club.jsx'
-import EventForm from './event/EventForm.jsx';
-import EventList from './event/EventList.jsx';
-import EventDetails from './event/EventDetails.jsx';
-import EventRating from './event/EventRating.jsx';
-function MainRouter() {   
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./core/Home";
+import Users from "./user/Users.jsx";
+import Signup from "./user/Signup.jsx";
+import Signin from "./lib/Signin.jsx";
+import Profile from "./user/Profile.jsx";
+import PrivateRoute from "./lib/PrivateRoute.jsx";
+import EditProfile from "./user/EditProfile.jsx";
+import Menu from "./core/Menu";
+import ClubList from "./club/ClubList.jsx";
+import Club from "./club/Club.jsx";
+import EventForm from "./event/EventForm.jsx";
+import EventList from "./event/EventList.jsx";
+import EventDetails from "./event/EventDetails.jsx";
+function MainRouter() {
   return (
     <div>
-      <Menu/>
+      <Menu />
       <Routes>
-        <Route path="/" element={<ClubList />} /> 
+        <Route path="/" element={<ClubList />} />
         <Route path="/about" element={<Home />} />
         <Route path="/club/:clubId" element={<Club />} />
         <Route path="/eventList" element={<EventList />} />
         <Route path="/eventForm" element={<EventForm />} />
-        <Route path="/eventRating" element={<EventRating />} />
-       <Route path="/eventList/:eventId" element={<EventDetails/>} />
+        <Route path="/event/:eventId" element={<EventDetails />} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />

@@ -11,10 +11,10 @@ const eventSchema = new mongoose.Schema(
         date: {
             type: Date,
             required: [true, 'Event date is required.'],
-            validate: {
-                validator: (value) => value >= new Date(),
-                message: 'Event date cannot be in the past.'
-            }
+            // validate: {
+            //     validator: (value) => value >= new Date(),
+            //     message: 'Event date cannot be in the past.'
+            // }
         },
         location: {
             type: String,
@@ -42,21 +42,21 @@ const eventSchema = new mongoose.Schema(
             required: false, // Optional field
             trim: true
         },
-        rating:[{
-            user:{
+        rating: [{
+            user: {
                 type: String,
-                required:true
+                // required:true
             },
-            stars:{
-                type:Number,
-                required:true, min: 1,
-              max:5  
+            stars: {
+                type: Number,
+                required: true, min: 1,
+                max: 5
             },
-            review:{
-                type:String,
-                required:true
+            review: {
+                type: String,
+                // required:true
             }
-            
+
         }],
         created: {
 

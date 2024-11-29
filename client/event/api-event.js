@@ -12,7 +12,7 @@ const apiRequest = async (url, method, eventData = null, signal = null) => {
         };
 
         const response = await fetch(url, options);
-        
+
         if (!response.ok) {
             const errorData = await response.json();
             console.error(`${method} request failed for ${url}:`, errorData.message || 'Unknown error');
@@ -73,6 +73,18 @@ export const listEvents = async (signal) => {
         return data; // The response should contain event data including associated club
     } catch (error) {
         console.error('Error fetching events:', error);
+        return null;
+    }
+};
+
+export const readEvent = async (eventId, signal) => {
+    try {
+        const data = await apiRequest(`/api/events/${eventId}`, 'GET', null, signal);
+        console.log('Fetched events:', data);
+        return data;
+    } catch (error) {
+        console.log(error);
+        // alert('An error occurred while read the event. Please try again later.');
         return null;
     }
 };
