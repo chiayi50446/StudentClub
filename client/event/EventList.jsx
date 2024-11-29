@@ -43,6 +43,8 @@ const EventList = () => {
         fetchEvents();
     }, []);
 
+  
+
     // Handle edit dialog opening
     const handleEditClick = (event) => {
         setEditingEvent(event);
@@ -79,7 +81,6 @@ const EventList = () => {
         }
     };
 
-    
    
     // Handle delete event
     const handleDeleteEvent = async (eventId) => {
@@ -90,6 +91,8 @@ const EventList = () => {
             alert('Failed to delete event');
         }
     };
+
+    
 
     if (loading) {
         return (
@@ -111,28 +114,6 @@ const EventList = () => {
     }
 
     
-
-
-    // const calculateAverageRating = (ratings) => {
-    //     if (ratings.length === 0) return 0;
-    //     const totalRating = ratings.reduce((acc, rating) => acc + rating.rating, 0);
-    //     return (totalRating / ratings.length).toFixed(1);
-    //   };
-    
-    //   return (
-    //     <div>
-    //       {events.map(event => (
-    //         <div key={event._id}>
-    //           <h3>{event.name}</h3>
-    //           <p>{event.description}</p>
-    //           <p>Date: {new Date(event.date).toLocaleDateString()}</p>
-    //           <p>Average Rating: {calculateAverageRating(event.ratings)} / 5</p>
-    //           <EventRating eventId={event._id} />
-    //         </div>
-    //       ))}
-    //     </div>
-    //   );
-
     return (
 
         <Box sx={{ maxWidth: 600, margin: 'auto', p: 2 }}>

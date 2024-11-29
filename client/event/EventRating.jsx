@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { updateEvent } from './api-event.js'; // Import API functions
 
-
 const EventRating = ({ eventId }) => {
   const [rating, setRating] = useState(0);
 
   const handleRating = () => {
+
 
     //read the event by event id
     const updatedEvent = {
@@ -23,7 +23,7 @@ const EventRating = ({ eventId }) => {
       alert('Failed to update event');
   }
     // rateEvent(eventId, rating).then(() => alert('Rating submitted!'));
-  };
+}; 
 
 return (
     <div>

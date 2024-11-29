@@ -38,8 +38,25 @@ const eventSchema = new mongoose.Schema(
             required: false, // Optional field
             trim: true
         },
+        rating:[{
+            user:{
+                type: String,
+                required:true
+            },
+            stars:{
+                type:Number,
+                required:true, min: 1,
+              max:5  
+            },
+            review:{
+                type:String,
+                required:true
+            }
+            
+        }],
      
         created: {
+
             type: Date,
             default: Date.now
         },
@@ -71,13 +88,8 @@ eventSchema.pre('save', function (next) {
     next();
 });
 
-const RatingSchema = new mongoose.Schema({
-    eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
-    user: { type: String, required: true },
-    rating: { type: Number, required: true, min: 1, max: 5 },
-});
 
 
-const Event = mongoose.model('Event','Rating', eventSchema,RatingSchema);
+const Event = mongoose.model('Event', eventSchema);
 
 export default Event;
