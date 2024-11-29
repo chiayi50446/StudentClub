@@ -44,7 +44,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Signin(props) {
   const location = useLocation();
-  console.log(location.state)
   const classes = useStyles()
   const [values, setValues] = useState({
       email: '',
@@ -62,7 +61,6 @@ export default function Signin(props) {
       if (data.error) {
         setValues({ ...values, error: data.error})
       } else {
-        console.log(data)
         auth.authenticate(data, () => {
           setValues({ ...values, error: '',redirectToReferrer: true})
         })

@@ -259,7 +259,7 @@ const EventList = () => {
                                     primary={event.title}
                                     secondary={
                                         <>
-                                            <Typography component="span" variant="body2" color="textSecondary">
+                                            {event.date && <Typography component="span" variant="body2" color="textSecondary">
                                                 Date: {(() => {
                                                     const eventDate = new Date(event.date);
                                                     // Add one day to the event date
@@ -269,7 +269,7 @@ const EventList = () => {
                                                     return `${formattedDate} | Location: ${event.location}`;
                                                 })()}
                                                 <br />
-                                            </Typography>
+                                            </Typography>}
                                             <Typography component="span" variant="body2" color="textSecondary">
                                                 Organizer: {event.organizer}<br/>
                                             </Typography>
