@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createEvent } from './api-event.js'; // Import the createEvent function
-import { TextField, Button, Grid, Typography, Paper } from '@mui/material'; // Material UI components
+import { TextField, Button, Grid, Typography, Paper, MenuItem, Select, InputLabel, FormControl } from '@mui/material'; // Material UI components
 import { useNavigate } from 'react-router-dom';
+import { list } from '../club/api-club.js'; // Import the listClubs function
 
 const EventForm = () => {
     const navigate = useNavigate();
@@ -10,7 +11,23 @@ const EventForm = () => {
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
     const [organizer, setOrganizer] = useState('');
+    const [club, setClub] = useState(''); // New state for club selection
+    const [clubs, setClubs] = useState([]); // State to hold the list of clubs
     const [error, setError] = useState(null); // For error handling
+
+    useEffect(() => {
+        // Fetch the clubs when the component mounts
+        const fetchClubs = async () => {
+            try {
+                const fetchedClubs = await list();
+                setClubs(fetchedClubs);
+            } catch (err) {
+                console.error('Error fetching clubs:', err);
+            }
+        };
+
+        fetchClubs();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,6 +38,7 @@ const EventForm = () => {
             location,
             description,
             organizer,
+            club, // Add the club to eventData
         };
 
         console.log("Submitting event data:", eventData); // Debug log
@@ -35,8 +53,9 @@ const EventForm = () => {
                 setLocation('');
                 setDescription('');
                 setOrganizer('');
+                setClub(''); // Clear club selection
                 setError(null); // Clear previous errors
-                navigate("/eventList")
+                navigate("/eventList");
             }
         } catch (err) {
             console.error('Error creating event:', err);
@@ -104,6 +123,26 @@ const EventForm = () => {
                             onChange={(e) => setOrganizer(e.target.value)}
                             required
                         />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth required>
+                            <InputLabel>Club</InputLabel>
+                            <Select
+                                value={club}
+                                onChange={(e) => setClub(e.target.value)}
+                                label="Club"
+                            >
+                                {clubs.length > 0 ? (
+                                    clubs.map((club) => (
+                                        <MenuItem key={club._id} value={club._id}>
+                                            {club.name}
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <MenuItem value="">Loading clubs...</MenuItem>
+                                )}
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12}>
                         <Button type="submit" variant="contained" color="primary" fullWidth>

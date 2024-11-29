@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Route to create a new event
 router.post('/api/events', async (req, res) => {
-    const { title, date, location, description, organizer } = req.body;
+    const { title, date, location, description, organizer, club } = req.body;
 
     try {
         const newEvent = new Event({
@@ -14,6 +14,7 @@ router.post('/api/events', async (req, res) => {
             location,
             description,
             organizer,
+            club,
         });
 
         const savedEvent = await newEvent.save();
@@ -27,7 +28,9 @@ router.post('/api/events', async (req, res) => {
 // Route to get all events
 router.get('/api/events', async (req, res) => {
     try {
-        const events = await Event.find().sort({ date: 1 }); // Fetch all events sorted by date
+        const events = await Event.find()
+            .populate('club', 'name') // Fetch the club details
+            .sort({ date: 1 }); // Fetch all events sorted by date
         res.status(200).json(events);
     } catch (error) {
         console.error('Error fetching events:', error.message);
@@ -40,7 +43,7 @@ router.get('/api/events/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const event = await Event.findById(id);
+        const event = await Event.findById(id).populate('club', 'name');
         if (!event) {
             return res.status(404).json({ error: 'Event not found.' });
         }
