@@ -7,10 +7,6 @@ const EventRating = ({ eventId }) => {
   const handleRating = () => {
 
 
-    //read the event by event id
-    const updatedEvent = {
- // put rating number & userId
-    }
     try {
       const updated = updateEvent(editingEvent._id, updatedEvent);
       setEvents((prevEvents) =>
