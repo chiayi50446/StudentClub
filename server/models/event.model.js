@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const eventSchema = new mongoose.Schema(
@@ -33,6 +32,11 @@ const eventSchema = new mongoose.Schema(
             required: [true, 'Organizer name is required.'],
             trim: true
         },
+        club: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Club', // Reference to the Club model
+            required: [true, 'Club is required.']
+        },
         actions: {
             type: String,
             required: false, // Optional field
@@ -54,7 +58,6 @@ const eventSchema = new mongoose.Schema(
             }
             
         }],
-     
         created: {
 
             type: Date,
@@ -87,8 +90,6 @@ eventSchema.pre('save', function (next) {
     }
     next();
 });
-
-
 
 const Event = mongoose.model('Event', eventSchema);
 

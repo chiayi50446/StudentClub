@@ -21,7 +21,9 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let events = await Event.find().select('title date location organizer description created updated');
+        let events = await Event.find()
+            .populate('club', 'name') // Populate the club name from the Club collection
+            .select('title date location organizer description created updated club');
         res.json(events);
     } catch (err) {
         return res.status(400).json({
@@ -32,7 +34,7 @@ const list = async (req, res) => {
 
 const eventByID = async (req, res, next, id) => {
     try {
-        let event = await Event.findById(id);
+        let event = await Event.findById(id).populate('club', 'name');
         if (!event) {
             return res.status(404).json({ error: "Event not found" });
         }
@@ -51,7 +53,7 @@ const read = (req, res) => {
 };
 
 const update = async (req, res) => {
-    const allowedUpdates = ['title', 'date', 'location', 'description', 'organizer'];
+    const allowedUpdates = ['title', 'date', 'location', 'description', 'organizer', 'club'];
     try {
         let event = req.event;
         if (!event) {

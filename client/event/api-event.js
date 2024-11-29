@@ -1,5 +1,5 @@
 // Helper function to handle API requests
-const apiRequest = async (url, method, eventData = null) => {
+const apiRequest = async (url, method, eventData = null, signal = null) => {
     try {
         const options = {
             method,
@@ -8,6 +8,7 @@ const apiRequest = async (url, method, eventData = null) => {
                 'Content-Type': 'application/json',
             },
             body: eventData ? JSON.stringify(eventData) : null,
+            signal,
         };
 
         const response = await fetch(url, options);
@@ -29,6 +30,7 @@ const apiRequest = async (url, method, eventData = null) => {
 // Function to create a new event
 export const createEvent = async (eventData) => {
     try {
+        // Include club ID in the event data
         const data = await apiRequest('/api/events', 'POST', eventData);
         console.log('Event created successfully:', data);
         return data;
@@ -41,6 +43,7 @@ export const createEvent = async (eventData) => {
 // Function to update an event
 export const updateEvent = async (eventId, eventData) => {
     try {
+        // Include club ID in the event data for update
         const data = await apiRequest(`/api/events/${eventId}`, 'PUT', eventData);
         console.log('Event updated successfully:', data);
         return data;
@@ -62,19 +65,17 @@ export const deleteEvent = async (eventId) => {
     }
 };
 
-
-// Function to list all events
+// Function to list all events (including associated club data)
 export const listEvents = async (signal) => {
     try {
         const data = await apiRequest('/api/events', 'GET', null, signal);
         console.log('Fetched events:', data);
-        return data;
+        return data; // The response should contain event data including associated club
     } catch (error) {
         console.error('Error fetching events:', error);
         return null;
     }
 };
-
 
 // Function to rate  events
 export const rateEvents = async (signal) => {

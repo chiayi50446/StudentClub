@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { listEvents, updateEvent, deleteEvent } from './api-event.js'; // Import API functions
+import { list } from '../club/api-club.js'; // Import clubs function
 import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -16,83 +17,154 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
-
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 const EventList = () => {
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]);
+    const [clubs, setClubs] = useState([]); // State for clubs
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editingEvent, setEditingEvent] = useState(null); // Event being edited
     const [updatedEvent, setUpdatedEvent] = useState({}); // Updated event data
-    
-
+    const [filter, setFilter] = useState({
+        title: '',
+        club: '',
+        location: '',
+        date: ''
+    });
 
     useEffect(() => {
-        const fetchEvents = async () => {
+        const fetchData = async () => {
             try {
-                const data = await listEvents(); // Fetch the events from the API
-                setEvents(data);
+                const [eventsData, clubsData] = await Promise.all([
+                    listEvents(),
+                    list()
+                ]);
+                setEvents(eventsData);
+                setClubs(clubsData);
+                setFilteredEvents(eventsData); // Initialize filtered events
             } catch (err) {
-                setError('Error loading events');
+                setError('Error loading events or clubs');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchEvents();
+        fetchData();
     }, []);
 
-  
+    useEffect(() => {
+        const applyFilter = () => {
+            let filtered = events;
 
-    // Handle edit dialog opening
+            if (filter.title) {
+                filtered = filtered.filter(event =>
+                    event.title.toLowerCase().includes(filter.title.toLowerCase())
+                );
+            }
+
+            if (filter.club) {
+                filtered = filtered.filter(event => event.club && event.club._id === filter.club);
+            }
+
+            if (filter.location) {
+                filtered = filtered.filter(event =>
+                    event.location.toLowerCase().includes(filter.location.toLowerCase())
+                );
+            }
+
+            if (filter.date) {
+                // Format the date input for comparison (YYYY-MM-DD)
+                const filterDate = new Date(filter.date).toISOString().split('T')[0];
+
+                filtered = filtered.filter(event => {
+                    const eventDate = event.date.split('T')[0]; // Extract the date part from the ISO string (YYYY-MM-DD)
+                    return eventDate === filterDate;
+                });
+            }
+
+            setFilteredEvents(filtered);
+        };
+
+        applyFilter(); // Apply the filter whenever the filter state changes
+    }, [filter, events]);
+
     const handleEditClick = (event) => {
         setEditingEvent(event);
-        setUpdatedEvent(event); // Pre-fill the dialog with existing data
+        setUpdatedEvent({ 
+            ...event, 
+            club: event.club?._id || '',
+            date: event.date.split('T')[0] || '', // Format date to YYYY-MM-DD for the dialog input
+            organizer: event.organizer || ''
+        }); // Pre-fill the dialog with existing data
     };
 
     const handleAddClick = () => {
-        navigate("/eventForm")
-    }
+        navigate("/eventForm");
+    };
 
     const handleRateEvent = () => {
-        navigate("/eventRating")
+        navigate("/eventRating");
+    };
 
-    }
-
-
-    // Handle edit dialog closing
     const handleCloseDialog = () => {
         setEditingEvent(null);
     };
 
-    // Handle update event submission
     const handleUpdateEvent = async () => {
         try {
-            const updated = await updateEvent(editingEvent._id, updatedEvent);
-            setEvents((prevEvents) =>
-                prevEvents.map((event) =>
-                    event._id === editingEvent._id ? updated : event
-                )
-            );
+            // Ensure the date is correctly formatted before sending the update request
+            const formattedDate = updatedEvent.date + 'T00:00:00Z'; // Append time to make it a full ISO string (midnight)
+            await updateEvent(editingEvent._id, { ...updatedEvent, date: formattedDate });
+            
+            // After updating, refetch the events to refresh the list
+            const updatedEvents = await listEvents();
+            setEvents(updatedEvents);
+            setFilteredEvents(updatedEvents); // Also update filtered events
             handleCloseDialog();
         } catch (err) {
             alert('Failed to update event');
         }
     };
 
-   
-    // Handle delete event
     const handleDeleteEvent = async (eventId) => {
         try {
             await deleteEvent(eventId);
-            setEvents((prevEvents) => prevEvents.filter((event) => event._id !== eventId));
+            const updatedEvents = await listEvents();
+            setEvents(updatedEvents);
+            setFilteredEvents(updatedEvents); // Update the filtered events list
         } catch (err) {
             alert('Failed to delete event');
         }
     };
 
-    
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilter((prevFilter) => ({
+            ...prevFilter,
+            [name]: value
+        }));
+    };
+
+    const handleClubChange = (e) => {
+        const selectedClubId = e.target.value;
+        const selectedClub = clubs.find(club => club._id === selectedClubId);
+        setUpdatedEvent({
+            ...updatedEvent,
+            club: selectedClub
+        });
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedEvent({
+            ...updatedEvent,
+            [name]: value
+        });
+    };
 
     if (loading) {
         return (
@@ -113,9 +185,7 @@ const EventList = () => {
         );
     }
 
-    
     return (
-
         <Box sx={{ maxWidth: 600, margin: 'auto', p: 2 }}>
             <ListItem alignItems="flex-start">
                 <ListItemText>
@@ -123,21 +193,66 @@ const EventList = () => {
                         Event Management
                     </Typography>
                 </ListItemText>
-            <Button
-                variant="contained"
-                size="small"
-                sx={{ mt: 1 }}
-                startIcon={<AddIcon />}
-                onClick={() => handleAddClick()}
-            >
-                Add
-            </Button>
+                <Button
+                    variant="contained"
+                    size="small"
+                    sx={{ mt: 1 }}
+                    startIcon={<AddIcon />}
+                    onClick={() => handleAddClick()}
+                >
+                    Add
+                </Button>
             </ListItem>
-            {events === null || events.length===0 ? (
+
+            {/* Filter Section */}
+            <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
+                <TextField
+                    label="Search by Title"
+                    name="title"
+                    value={filter.title}
+                    onChange={handleFilterChange}
+                    fullWidth
+                />
+                <TextField
+                    select
+                    label="Filter by Club"
+                    name="club"
+                    value={filter.club}
+                    onChange={handleFilterChange}
+                    fullWidth
+                >
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                    {clubs.map((club) => (
+                        <MenuItem key={club._id} value={club._id}>
+                            {club.name}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    label="Search by Location"
+                    name="location"
+                    value={filter.location}
+                    onChange={handleFilterChange}
+                    fullWidth
+                />
+                <TextField
+                    label="Search by Date"
+                    type="date"
+                    name="date"
+                    value={filter.date}
+                    onChange={handleFilterChange}
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                />
+            </Box>
+
+            {filteredEvents.length === 0 ? (
                 <Typography variant="body1">No events found.</Typography>
             ) : (
                 <List>
-                    {events.map((event) => (
+                    {filteredEvents.map((event) => (
                         <React.Fragment key={event._id}>
                             <ListItem alignItems="flex-start">
                                 <ListItemText
@@ -145,23 +260,35 @@ const EventList = () => {
                                     secondary={
                                         <>
                                             <Typography component="span" variant="body2" color="textSecondary">
-                                                {new Date(event.date).toLocaleDateString()} | {event.location}<br/>
+                                                Date: {(() => {
+                                                    const eventDate = new Date(event.date);
+                                                    // Add one day to the event date
+                                                    eventDate.setDate(eventDate.getDate());
+                                                    // Format the date as YYYY-MM-DD
+                                                    const formattedDate = eventDate.toISOString().split('T')[0];
+                                                    return `${formattedDate} | Location: ${event.location}`;
+                                                })()}
+                                                <br />
                                             </Typography>
                                             <Typography component="span" variant="body2" color="textSecondary">
                                                 Organizer: {event.organizer}<br/>
                                             </Typography>
                                             {event.description && (
                                                 <Typography component="span" variant="body2" color="textSecondary">
-                                                    {event.description}
+                                                    Description: {event.description}<br/>
                                                 </Typography>
                                             )}
-                                          
-                                          {event.rating && event.rating.map((item, i) => {
+                                            {event.club && (
+                                                <Typography component="span" variant="body2" color="textSecondary">
+                                                    Club: {event.club.name}
+                                                </Typography>
+                                            )}
+
+                                            {event.rating && event.rating.map((item, i) => {
                                                 <Typography component="span" variant="body2" color="textSecondary">
                                                     {event.description}
                                                 </Typography>
                                             })}
-
                                         </>
                                     }
                                 />
@@ -189,82 +316,85 @@ const EventList = () => {
                                 >
                                    Rate
                                 </Button>
-            
                             </ListItem>
-                            <Divider component="li" />
+                            <Divider />
                         </React.Fragment>
                     ))}
                 </List>
             )}
 
-            {/* Edit Event Dialog */}
             <Dialog open={Boolean(editingEvent)} onClose={handleCloseDialog}>
                 <DialogTitle>Edit Event</DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus
                         margin="dense"
                         label="Title"
+                        name="title"
                         fullWidth
                         value={updatedEvent.title || ''}
-                        onChange={(e) =>
-                            setUpdatedEvent({ ...updatedEvent, title: e.target.value })
-                        }
+                        onChange={handleInputChange}
                     />
                     <TextField
                         margin="dense"
                         label="Date"
+                        name="date"
                         type="date"
                         fullWidth
+                        value={updatedEvent.date || ''}
+                        onChange={handleInputChange}
                         InputLabelProps={{ shrink: true }}
-                        value={updatedEvent.date?.split('T')[0] || ''}
-                        onChange={(e) =>
-                            setUpdatedEvent({ ...updatedEvent, date: e.target.value })
-                        }
                     />
                     <TextField
                         margin="dense"
                         label="Location"
+                        name="location"
                         fullWidth
                         value={updatedEvent.location || ''}
-                        onChange={(e) =>
-                            setUpdatedEvent({ ...updatedEvent, location: e.target.value })
-                        }
+                        onChange={handleInputChange}
                     />
                     <TextField
                         margin="dense"
                         label="Description"
+                        name="description"
                         fullWidth
-                        multiline
-                        rows={3}
                         value={updatedEvent.description || ''}
-                        onChange={(e) =>
-                            setUpdatedEvent({ ...updatedEvent, description: e.target.value })
-                        }
+                        onChange={handleInputChange}
                     />
                     <TextField
                         margin="dense"
                         label="Organizer"
+                        name="organizer"
                         fullWidth
                         value={updatedEvent.organizer || ''}
-                        onChange={(e) =>
-                            setUpdatedEvent({ ...updatedEvent, organizer: e.target.value })
-                        }
+                        onChange={handleInputChange}
                     />
+                    <TextField
+                        select
+                        margin="dense"
+                        label="Club"
+                        name="club"
+                        fullWidth
+                        value={updatedEvent.club || ''}
+                        onChange={handleClubChange}
+                    >
+                        {clubs.map((club) => (
+                            <MenuItem key={club._id} value={club._id}>
+                                {club.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog} color="secondary">
                         Cancel
                     </Button>
                     <Button onClick={handleUpdateEvent} color="primary">
-                        Save
+                        Update
                     </Button>
                 </DialogActions>
             </Dialog>
         </Box>
     );
 };
-
-
 
 export default EventList;
