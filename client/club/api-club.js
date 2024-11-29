@@ -27,12 +27,21 @@ const create = async (club) => {
         alert('An error occurred while creating the club. Please try again later.');
         return null; // Return null in case of any error
     }
-}
+};
 
-// Function to list all clubs
-const list = async (signal) => {
+const list = async (signal, filters) => {
     try {
-        let response = await fetch('/api/clubs/', {
+        let url = '/api/clubs?';
+
+        // Add category and name filters to the URL query string
+        if (filters.category) {
+            url += `category = ${filters.category}&`;
+        }
+        if (filters.name) {
+            url += `name = ${filters.name}&`;
+        }
+
+        let response = await fetch(url, {
             method: 'GET',
             signal: signal
         });
@@ -42,7 +51,7 @@ const list = async (signal) => {
         }
 
         // Return the list of clubs
-        return await response.json(); 
+        return await response.json();
     } catch (err) {
         console.error('Error fetching clubs:', err);
         return null; // Return null in case of error
