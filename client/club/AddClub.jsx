@@ -18,8 +18,24 @@ import {list} from '../user/api-user.js';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton'
+import auth from '../lib/auth-helper.js'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+import Resizer from "react-image-file-resizer";
 
-export default function AddClub() {
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+export default function AddClub(props) {
+  const jwt = auth.isAuthenticated()
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState([])
   const [formData, setFormData] = useState({
@@ -88,6 +104,28 @@ export default function AddClub() {
     }));
   };
 
+  const handlePictureUpload = async (event) => {
+    const file = event.target.files[0];
+    if(!file.type.startsWith('image/')){
+      return;
+    }
+    await resizeFile(file);
+  };
+
+  const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file, 200, 200, "JPEG", 50, 0,
+        (uri) => {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            pictureUri: uri
+          }));
+        },
+        "base64"
+      );
+    });
+
   const handleLeaderShipChange = (event, index) => {
     const { leadership } = formData;
     leadership[index].leadershipId = event.target.value;
@@ -142,16 +180,12 @@ export default function AddClub() {
 
   const onSubmit = (event) => {
     event.preventDefault();
-
-    // Calling the create function to add a new club
-    create(formData).then((data) => {
+    create(formData, {t: jwt.token}).then((data) => {
       if (data && data.error) {
-        // Handle error, show feedback to the user
         console.log(data.error);
       } else {
-        // On success, close the dialog and reload the page
+        props.setClubList(oldArray => [...oldArray,data] )
         handleClose();
-        window.location.reload(); // You can change this to a more efficient way of updating the UI if needed
       }
     });
   };
@@ -225,17 +259,30 @@ export default function AddClub() {
               </Select>
             </FormControl>
           </div>
-          <TextField
-            required
-            margin="dense"
-            id="pictureUri"
-            name="pictureUri"
-            value={formData.pictureUri}
-            label="Picture Uri"
-            fullWidth
-            variant="standard"
-            onChange={handleChange}
-          />
+          <Grid container spacing={3}>
+            <Grid>
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{ mt: 2 }}
+              >
+                Upload files
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={handlePictureUpload}
+                  multiple
+                  accept='image/*'
+                />
+
+              </Button>
+            </Grid>
+            <Grid>
+              {formData.pictureUri && <img src={formData.pictureUri} width='40' height='40' style={{marginTop: '12px'}}/>}
+            </Grid>
+          </Grid>
           <Typography variant="h6" inline="true" sx={{ mt: 1 }}>
             Leadership Info
             

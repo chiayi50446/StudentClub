@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import UserAvatar from '../user/UserAvatar'
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -57,7 +58,7 @@ export default function Menu(){
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-          <Avatar alt="Logo" src={LogoImg} />
+            <Avatar alt="Logo" src={LogoImg} />
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <Link to="/">
                   <IconButton aria-label="Home" style={isActive(location, "/")}>
@@ -76,11 +77,11 @@ export default function Menu(){
               <Link to="/users">
                 <Button sx={{ p: 1 }} style={isActive(location, "/users")}>Users</Button>
               </Link>
-              {auth.isAuthenticated() && 
+              {/* {auth.isAuthenticated() && 
                 <Link to={"/user/" + auth.isAuthenticated().user._id}>
                   <Button sx={{ p: 1 }} style={isActive(location, "/user/" + auth.isAuthenticated().user._id)}>My Profile</Button>
                 </Link>
-              }
+              } */}
             </Box>
           </Box>
           <Box
@@ -99,8 +100,11 @@ export default function Menu(){
                 </Link>
               </>)
             }
-            {auth.isAuthenticated() && 
+            {/* {auth.isAuthenticated() && 
                 <Button color="inherit" onClick={() => {auth.clearJWT(() => navigate('/'));}}>Sign out</Button>
+            } */}
+            {auth.isAuthenticated() && 
+                <UserAvatar/>
             }
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -183,54 +187,5 @@ export default function Menu(){
         </StyledToolbar>
       </Container>
     </AppBar>
-
-
-  // <AppBar position="static">
-  //   <Toolbar>
-  //   <Avatar alt="Logo" src={LogoImg} />
-  //     <Typography variant="h6" color="inherit">
-  //       Student Club
-  //     </Typography>
-  //     <Link to="/">
-  //       <IconButton aria-label="Home" style={isActive(location, "/")}>
-  //         <HomeIcon/>
-  //       </IconButton>
-  //     </Link>
-  //     <Link to="/about">
-  //       <Button style={isActive(location, "/about")}>About</Button>
-  //     </Link>
-  //     <Link to="/eventForm">
-  //       <Button style={isActive(location, "/eventForm")}>EventForm</Button>
-  //     </Link> 
-  //     <Link to="/eventList">
-  //       <Button style={isActive(location, "/eventList")}>EventList</Button>
-  //     </Link>
-  //     <Link to="/users">
-  //       <Button style={isActive(location, "/users")}>Users</Button>
-  //     </Link>
-  //     {
-  //       !auth.isAuthenticated() && (<span>
-  //         <Link to="/signup">
-  //           <Button style={isActive(location, "/signup")}>Sign up
-  //           </Button>
-  //         </Link>
-  //         <Link to="/signin">
-  //           <Button style={isActive(location, "/signin")}>Sign In
-  //           </Button>
-  //         </Link>
-  //       </span>)
-  //     }
-  //     {
-  //       auth.isAuthenticated() && (<span>
-  //         <Link to={"/user/" + auth.isAuthenticated().user._id}>
-  //           <Button style={isActive(location, "/user/" + auth.isAuthenticated().user._id)}>My Profile</Button>
-  //         </Link>
-  //         <Button color="inherit" onClick={() => {
-  //              auth.clearJWT(() => navigate('/'));
-  //           }}>Sign out</Button>
-  //       </span>)
-  //     }
-  //   </Toolbar>
-  // </AppBar>
 );
 };

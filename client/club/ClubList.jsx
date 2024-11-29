@@ -12,6 +12,8 @@ import Typography from '@mui/material/Typography';
 import { list } from './api-club.js';
 import AddClub from './AddClub.jsx';
 import CircularProgress from '@mui/material/CircularProgress'; // Added for loading indicator
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import auth from '../lib/auth-helper.js'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -101,11 +103,13 @@ export default function ClubList() {
                             All Clubs
                         </Typography>
                     </Grid>
-                    <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
-                        <Grid>
-                            <AddClub />
+                    {auth.isAuthenticated() && auth.isAuthenticated().user.isAdmin &&
+                        <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
+                            <Grid>
+                                <AddClub setClubList={setClubList}/>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    }
                 </Grid>
             </div>
 
@@ -128,7 +132,7 @@ export default function ClubList() {
             <Grid container spacing={3}>
                 {clubList.map((item, i) => (
                     <Grid key={i}>
-                        <Card className={classes.card}>
+                        <Card className={classes.card} sx={{ width: '200px' }}>
                             <CardMedia
                                 component="img"
                                 alt={item.name}
@@ -144,9 +148,11 @@ export default function ClubList() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button href={"/club/" + item._id} size="small">
-                                    Learn More
-                                </Button>
+                                <Link to={"/club/" + item._id}>
+                                    <Button size="small">
+                                        Learn More
+                                    </Button>
+                                </Link>
                             </CardActions>
                         </Card>
                     </Grid>

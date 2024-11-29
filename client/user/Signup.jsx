@@ -28,6 +28,10 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontSize: 18,
   },
+  actions: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));
 
 export default function Signup() {
@@ -57,6 +61,10 @@ export default function Signup() {
     e.preventDefault(); // Prevent page reload
     if (!values.name || !values.email || !values.password) {
       setValues({ ...values, error: 'All fields are required' });
+      return;
+    }
+    if(values.name.toLocaleLowerCase() === "admin"){
+      setValues({...values, error: "user name cannot be 'admin'"})
       return;
     }
 
@@ -123,7 +131,7 @@ export default function Signup() {
             margin="normal"
           />
         </CardContent> 
-        <CardActions>
+        <CardActions className={classes.actions}>
           {/* Changed button type to 'submit' */}
           <Button 
             color="primary" 

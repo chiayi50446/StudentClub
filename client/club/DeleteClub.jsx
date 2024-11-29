@@ -11,24 +11,32 @@ import DialogTitle from '@mui/material/DialogTitle'
 import auth from '../lib/auth-helper.js'
 import {remove} from './api-club.js'
 import {Navigate} from 'react-router-dom'
+import Alert from '@mui/material/Alert';
 
 export default function DeleteClub(props) {
   const [open, setOpen] = useState(false)
   const [redirect, setRedirect] = useState(false)
+  const [error, setError] = useState(null); // State to handle errors
 
-//   const jwt = auth.isAuthenticated()
+  const jwt = auth.isAuthenticated()
   const clickButton = () => {
     setOpen(true)
   }
   const deleteClub = () => { 
     remove({
         clubId: props.clubId
-    }/*, {t: jwt.token}*/).then((data) => {
-      if (data && data.error) {
-        console.log(data.error)
-      } else {
-        setRedirect(true)
+    }, {t: jwt.token}).then((data) => {
+      if(data){
+        if (data.error) {
+          console.log(data.error)
+          setError(data.error);
+        } else {
+          setRedirect(true)
+        }
+      }else{
+        setError('Failed to remove club. Please try again.')
       }
+      
     })
   }
   const handleRequestClose = () => {
@@ -44,6 +52,9 @@ export default function DeleteClub(props) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
+        {error && 
+          <Alert severity="error">{error}</Alert>
+        }
         <DialogTitle>{"Delete Club"}</DialogTitle>
         <DialogContent>
           <DialogContentText>

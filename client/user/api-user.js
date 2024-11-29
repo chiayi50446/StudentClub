@@ -14,29 +14,32 @@ const create = async (user) => {
     }
 }
 
-const list = async (signal) => {
+const list = async (signal, query) => {
     try {
-        console.log("XYZ")
-        let response = await fetch('/api/users/', {
+        let uri = "/api/users";
+        if (query) {
+            Object.entries(query).map(([key, value]) => {
+                uri += `?${key}=${value}`;
+            });
+        }
+        let response = await fetch(uri, {
             method: 'GET',
             signal: signal,
         })
-        console.log(response)
         return await response.json()
     } catch (err) {
         console.log(err)
     }
 }
 
-const read = async (params, credentials, signal) => {
+const read = async (params, signal) => {
     try {
         let response = await fetch('/api/users/' + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + credentials.t
+                'Content-Type': 'application/json'
             }
         })
         return await response.json()

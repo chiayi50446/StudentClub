@@ -72,9 +72,8 @@ All Users
     
 <ListItem> 
 <ListItemAvatar>
-<Avatar> 
+<Avatar src={item.pictureUri} /> 
 
-</Avatar>
 </ListItemAvatar>
 <ListItemText primary={item.name}/> 
 <ListItemSecondaryAction>
