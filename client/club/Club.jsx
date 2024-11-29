@@ -25,6 +25,7 @@ import Button from '@mui/material/Button';
 import {update} from '../user/api-user.js'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import CircleIcon from '@mui/icons-material/Circle';
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
@@ -222,6 +223,8 @@ export default function Club() {
                             >
                                 <Grid sx={{ order: { xs: 2, sm: 1 } }}>
                                     <Typography variant="h4" inline="true">
+                                        
+                                        <CircleIcon sx={{ fontSize: 15, mr:1, color:`${club.status === "active" ? '#4caf50' : club.status === "inactive" ? '#607d8b' : '#ffc107'}` }}/>
                                         {club.name}
                                     </Typography>
                                 </Grid>
@@ -235,9 +238,6 @@ export default function Club() {
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                             <ListItem>
                                 <ListItemText primary={club.description} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary={`Status: ${club.status}`} />
                             </ListItem>
                             <ListItem>
                                 <ListItemText primary={`Type: ${club.type}`} />
