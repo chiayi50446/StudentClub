@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { read } from './api-club.js';
-import {read as readUser} from '../user/api-user.js'
-import {list as listUser} from '../user/api-user.js'
+import {read as readUser, list as listUser, update} from '../user/api-user.js'
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import List from '@mui/material/List';
@@ -22,15 +21,15 @@ import DeleteClub from './DeleteClub.jsx';
 import EditClub from './EditClub.jsx';
 import auth from '../lib/auth-helper.js'
 import Button from '@mui/material/Button';
-import {update} from '../user/api-user.js'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import CircleIcon from '@mui/icons-material/Circle';
 import ArrowForward from '@mui/icons-material/ArrowForward';
-import {Link} from 'react-router-dom'
 import stringAvatar from '../user/user-helper.js';
 import IconButton from '@mui/material/IconButton';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
@@ -118,7 +117,7 @@ export default function Club() {
                         console.log(data.error);
                     } else {
                         setLeaders(oldArray => [...oldArray, data]);
-                        if(auth.isAuthenticated() && auth.isAuthenticated().user._id==item.leadershipId && !clubAdmin){
+                        if(auth.isAuthenticated() && auth.isAuthenticated().user._id===item.leadershipId){
                             setClubAdmin(true);
                         }
                     }
@@ -149,7 +148,6 @@ export default function Club() {
             } else {
                 setUser(data);
                 setInClub(true);
-                console.log(data)
             }
         })
     }
@@ -286,9 +284,11 @@ export default function Club() {
                             >
                                 <Grid sx={{ order: { xs: 2, sm: 1 } }}>
                                     <Typography variant="h4" inline="true">
-                                        
                                         <CircleIcon sx={{ fontSize: 15, mr:1, color:`${club.status === "active" ? '#4caf50' : club.status === "inactive" ? '#607d8b' : '#ffc107'}` }}/>
                                         {club.name}
+                                    </Typography>
+                                    <Typography variant="caption" inline="true" sx={{ fontSize: 15, ml:3, color: '#ec407a'}}>
+                                        {club.type}
                                     </Typography>
                                 </Grid>
                                 {auth.isAuthenticated() && (clubAdmin || auth.isAuthenticated().user.isAdmin) &&
@@ -301,9 +301,6 @@ export default function Club() {
                         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                             <ListItem>
                                 <ListItemText primary={club.description} />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary={`Type: ${club.type}`} />
                             </ListItem>
                             <ListItem>
                                 <Link to="/eventList" state={{ clubId: club._id }} >

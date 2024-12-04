@@ -12,6 +12,7 @@ import auth from '../lib/auth-helper.js'
 import {remove} from './api-club.js'
 import {Navigate} from 'react-router-dom'
 import Alert from '@mui/material/Alert';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function DeleteClub(props) {
   const [open, setOpen] = useState(false)
@@ -47,9 +48,23 @@ export default function DeleteClub(props) {
     return <Navigate to='/'/>
   }
     return (<span>
-      <IconButton aria-label="Delete" onClick={clickButton} color="error">
-        <DeleteIcon/>
-      </IconButton>
+      <Tooltip
+        title="Delete Club"
+        slotProps={{
+          popper: {
+            modifiers: [
+              {
+                name: 'offset',
+                options: { offset: [0, -14] },
+              },
+            ],
+          },
+        }}
+      >
+        <IconButton aria-label="Delete" onClick={clickButton} color="error">
+          <DeleteIcon/>
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={handleRequestClose}>
         {error && 

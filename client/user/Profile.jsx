@@ -25,8 +25,7 @@ import stringAvatar from '../user/user-helper.js';
 
 const useStyles = makeStyles(theme => ({
   title: {
-    margin: '10 auto',
-    color: theme.palette.protectedTitle
+    color: theme.palette.openTitle
   }
 }))
 
@@ -110,10 +109,14 @@ export default function Profile({ match }) {
 
     return (
       <Container maxWidth="lg">
-      <Paper className={classes.root} elevation={4}>
-        <Typography variant="h5" className={classes.title} sx={{ p:1 }}>
-          Peronsal Profile
-        </Typography>
+        <ListItem alignItems="flex-start">
+          <ListItemText>
+            <Typography variant="h5" sx={{ mb: 2 }} className={classes.title}>
+              Peronsal Profile
+            </Typography>
+          </ListItemText>
+        </ListItem>
+      <Paper elevation={4}>
         <List dense>
           <ListItem>
             <ListItemAvatar>

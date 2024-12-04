@@ -24,6 +24,7 @@ import Alert from '@mui/material/Alert';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import Resizer from "react-image-file-resizer";
+import Tooltip from '@mui/material/Tooltip';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -185,9 +186,23 @@ export default function EditClub(props) {
 
   return (
     <span>
-      <IconButton aria-label="Edit" onClick={clickButton} color="primary">
-        <Edit />
-      </IconButton>
+      <Tooltip
+        title="Edit Club"
+        slotProps={{
+          popper: {
+            modifiers: [
+              {
+                name: 'offset',
+                options: { offset: [0, -14] },
+              },
+            ],
+          },
+        }}
+      >
+        <IconButton aria-label="Edit" onClick={clickButton} color="primary">
+          <Edit />
+        </IconButton>
+      </Tooltip>
 
       <Dialog open={open} onClose={handleRequestClose}>
         {error && 

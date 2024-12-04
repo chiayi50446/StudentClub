@@ -38,8 +38,7 @@ const useStyles = makeStyles(theme => ({
         paddingBottom: theme.spacing(2)
     },
     title: {
-        margin: theme.spacing(2),
-        color: theme.palette.protectedTitle
+        color: theme.palette.openTitle
     },
     error: {
         justifyContent: 'center',
@@ -150,8 +149,8 @@ export default function EditProfile({ match }) {
     return (
         <Card className={classes.card}>
             <CardContent>
-                <Typography variant="h6" className={classes.title}>
-                    Edit Profile
+                <Typography variant="h5" sx={{ mb: 2 }} className={classes.title}>
+                  Edit Profile
                 </Typography>
                 <TextField id="name" label="Name" className={classes.textField} value={values.name} onChange={handleChange('name')} margin="normal"/><br/>
                 <TextField id="email" type="email" label="Email" className={classes.textField} value={values.email} onChange={handleChange('email')} margin="normal"/><br/>

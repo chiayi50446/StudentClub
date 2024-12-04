@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState, useEffect} from 'react'
+import { makeStyles } from '@mui/styles'
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import Avatar from '@mui/material/Avatar'
 import Box from "@mui/material/Box";
@@ -19,9 +20,14 @@ import {list} from './api-user.js'
 import { Link as RouterLink } from 'react-router-dom';
 import stringAvatar from '../user/user-helper.js';
 
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: theme.palette.openTitle,
+  }
+}));
 
 export default function Users() {
-
+    const classes = useStyles()
     const [name, setName] = useState("");
     const [users, setUsers] = useState([])
     const [filterUsers, setFilterUsers] = useState([])
@@ -54,12 +60,12 @@ export default function Users() {
     return (
       <Container maxWidth="lg">
         <ListItem alignItems="flex-start">
-        <ListItemText>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            User Management
-          </Typography>
-        </ListItemText>
-      </ListItem>
+          <ListItemText>
+            <Typography variant="h5" sx={{ mb: 2 }} className={classes.title}>
+              User Management
+            </Typography>
+          </ListItemText>
+        </ListItem>
       {/* Filter Section */}
       <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
         <TextField

@@ -28,12 +28,18 @@ import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+import { makeStyles } from '@mui/styles'
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import auth from "../lib/auth-helper.js";
-
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: theme.palette.openTitle,
+  }
+}));
 const EventList = () => {
+  const classes = useStyles()
   const location = useLocation()
   const [expanded, setExpanded] = React.useState('panel1');
 
@@ -296,9 +302,9 @@ const EventList = () => {
 
   return (
     <Container maxWidth="lg">
-      <ListItem alignItems="flex-start">
+      <ListItem alignItems="flex-start" sx={{ mb: 2 }}>
         <ListItemText>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h5" className={classes.title}>
             Event Management
           </Typography>
         </ListItemText>
@@ -306,7 +312,6 @@ const EventList = () => {
           auth.isAuthenticated().user.isAdmin && (
           <Button
           variant="contained"
-          sx={{ mb: 2 }}
           startIcon={<AddIcon />}
           onClick={() => handleAddClick()}
           >

@@ -62,7 +62,7 @@ export default function Menu() {
           <Box
             sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
           >
-            <Avatar alt="Logo" src={LogoImg} />
+            <Avatar alt="Logo" src={LogoImg} sx={{ m: 1 }}/>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <Link to="/">
                 <IconButton aria-label="Home" style={isActive(location, "/")}>
@@ -74,9 +74,6 @@ export default function Menu() {
                   About
                 </Button>
               </Link>
-              {/* <Link to="/eventForm">
-                <Button sx={{ p: 1 }} style={isActive(location, "/eventForm")}>EventForm</Button>
-              </Link> */}
               <Link to="/eventList">
                 <Button sx={{ p: 1 }} style={isActive(location, "/eventList")}>
                   EventList
@@ -87,11 +84,6 @@ export default function Menu() {
                   Users
                 </Button>
               </Link>
-              {/* {auth.isAuthenticated() && 
-                <Link to={"/user/" + auth.isAuthenticated().user._id}>
-                  <Button sx={{ p: 1 }} style={isActive(location, "/user/" + auth.isAuthenticated().user._id)}>My Profile</Button>
-                </Link>
-              } */}
             </Box>
           </Box>
           <Box
@@ -115,9 +107,6 @@ export default function Menu() {
                 </Link>
               </>
             )}
-            {/* {auth.isAuthenticated() && 
-                <Button color="inherit" onClick={() => {auth.clearJWT(() => navigate('/'));}}>Sign out</Button>
-            } */}
             {auth.isAuthenticated() && <UserAvatar />}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1 }}>
@@ -159,11 +148,6 @@ export default function Menu() {
                     </Button>
                   </Link>
                 </MenuItem>
-                {/* <MenuItem>
-                  <Link to="/eventForm" style={{ width: '100%' }}>
-                    <Button fullWidth onClick={toggleDrawer(false)}>EventForm</Button>
-                  </Link>
-                </MenuItem> */}
                 <MenuItem>
                   <Link to="/eventList" style={{ width: "100%" }}>
                     <Button fullWidth onClick={toggleDrawer(false)}>

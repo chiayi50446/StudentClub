@@ -22,6 +22,9 @@ import Stack from "@mui/material/Stack";
 import CircleIcon from "@mui/icons-material/Circle";
 import auth from "../lib/auth-helper.js";
 import { Link } from "react-router-dom";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Box from "@mui/material/Box";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,8 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   title: {
-    fontWeight: "bold",
-    color: theme.palette.primary.main,
+    color: theme.palette.openTitle,
   },
   root: {
     padding: theme.spacing(3),
@@ -52,12 +54,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "20px",
     fontSize: "18px",
     color: theme.palette.text.secondary,
-  },
-  filterContainer: {
-    display: "flex",
-    justifyContent: "flex-start",
-    marginBottom: theme.spacing(1),
-  },
+  }
 }));
 
 export default function ClubList() {
@@ -129,32 +126,20 @@ export default function ClubList() {
 
   return (
     <Container maxWidth="lg">
-      <Paper className={classes.root} elevation={4}>
-        <div>
-          <Grid
-            container
-            justifyContent="space-between"
-            alignItems="center"
-            flexDirection={{ xs: "column", sm: "row" }}
-            sx={{ fontSize: "12px", margin: "5px" }}
-            size={12}
-          >
-            <Grid sx={{ order: { xs: 2, sm: 1 } }}>
-              <Typography variant="h4" className={classes.title} inline="true">
-                All Clubs
-              </Typography>
-            </Grid>
-            <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
-              {auth.isAuthenticated() &&
-                auth.isAuthenticated().user.isAdmin && (
-                  <Grid>
-                    <AddClub />
-                  </Grid>
-                )}
-            </Grid>
+      <ListItem alignItems="flex-start" sx={{ mb: 2 }}>
+        <ListItemText>
+          <Typography variant="h5" className={classes.title} inline="true">
+              Club Management
+          </Typography>
+        </ListItemText>
+        {auth.isAuthenticated() &&
+        auth.isAuthenticated().user.isAdmin && (
+          <Grid>
+            <AddClub />
           </Grid>
-        </div>
-        <div className={classes.filterContainer}>
+        )}
+      </ListItem>
+      <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
           <TextField
             id="outlined-basic"
             size="small"
@@ -199,7 +184,7 @@ export default function ClubList() {
               <MenuItem value="volunteering">Volunteering</MenuItem>
             </Select>
           </FormControl>
-        </div>
+        </Box>
         <div>
           <Stack direction="row" sx={{ mb: 1 }}>
             {searchTerm && (
@@ -230,7 +215,7 @@ export default function ClubList() {
             )}
           </Stack>
         </div>
-
+      <Paper className={classes.root} elevation={4}>
         {error && (
           <div className={classes.noClubsContainer}>
             <Typography variant="h6" color="error">

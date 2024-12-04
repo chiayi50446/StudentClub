@@ -40,7 +40,7 @@ export default function DeleteUser(props) {
     return <Navigate to='/'/>
   }
     return (<span>
-      <IconButton aria-label="Delete" onClick={clickButton} color="secondary">
+      <IconButton aria-label="Delete" onClick={clickButton} color="error">
         <DeleteIcon/>
       </IconButton>
 
