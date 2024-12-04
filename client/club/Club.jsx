@@ -293,6 +293,25 @@ export default function Club() {
                                 </Grid>
                                 {auth.isAuthenticated() && (clubAdmin || auth.isAuthenticated().user.isAdmin) &&
                                 <Grid container columnSpacing={1} sx={{ order: { xs: 1, sm: 2 } }}>
+                                    <Link to="/eventForm" state={{ clubId: club._id }} >
+                                        <Tooltip
+                                          title="Add Event"
+                                          slotProps={{
+                                            popper: {
+                                              modifiers: [
+                                                {
+                                                  name: 'offset',
+                                                  options: { offset: [0, -14] },
+                                                },
+                                              ],
+                                            },
+                                          }}
+                                        >
+                                            <IconButton color="primary">
+                                                <AddCircleIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Link>
                                     <EditClub club={club} updateClub={setClub}/>
                                     <DeleteClub clubId={clubId} />
                                 </Grid>}

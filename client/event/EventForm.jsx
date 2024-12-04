@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createEvent } from './api-event.js'; // Import the createEvent function
 import { TextField, Button, Grid, Typography, Paper, MenuItem, Select, InputLabel, FormControl } from '@mui/material'; // Material UI components
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { list } from '../club/api-club.js'; // Import the listClubs function
 
 const EventForm = () => {
+    const locationState = useLocation().state;
+    const [lockClub, setLockClub] = useState(false);
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
@@ -16,6 +18,10 @@ const EventForm = () => {
     const [error, setError] = useState(null); // For error handling
 
     useEffect(() => {
+        if(locationState && locationState.clubId!==''){
+            setLockClub(true);
+            setClub(locationState.clubId);
+        }
         // Fetch the clubs when the component mounts
         const fetchClubs = async () => {
             try {
@@ -125,7 +131,7 @@ const EventForm = () => {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl fullWidth required>
+                        <FormControl fullWidth required disabled={lockClub}>
                             <InputLabel>Club</InputLabel>
                             <Select
                                 value={club}

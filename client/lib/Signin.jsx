@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import Icon from '@mui/material/Icon'
+import Alert from '@mui/material/Alert';
 import { makeStyles } from '@mui/styles'
 import auth from './auth-helper.js'
 import {Navigate} from 'react-router-dom'
@@ -92,10 +92,8 @@ export default function Signin(props) {
           <TextField id="email" type="email" label="Email" className={classes.textField} value={values.email} onChange={handleChange('email')} margin="normal"/><br/>
           <TextField id="password" type="password" label="Password" className={classes.textField} value={values.password} onChange={handleChange('password')} margin="normal"/>
           <br/> {
-            values.error && (<Typography component="p" color="error">
-              <Icon color="error" className={classes.error}>error</Icon>
-              {values.error}
-            </Typography>)
+            values.error && 
+              <Alert severity="error"className={classes.error}>{values.error}</Alert>
           }
         </CardContent>
         <CardActions className={classes.actions}>
