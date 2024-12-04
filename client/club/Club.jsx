@@ -29,6 +29,8 @@ import CircleIcon from '@mui/icons-material/Circle';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import {Link} from 'react-router-dom'
 import stringAvatar from '../user/user-helper.js';
+import IconButton from '@mui/material/IconButton';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
@@ -150,6 +152,49 @@ export default function Club() {
                 console.log(data)
             }
         })
+    }
+
+    const handleMovingMember = async(deleteMember) => {
+        let deleteMemberDetail = {};
+        const abortController = new AbortController()
+        const signal = abortController.signal
+
+        await readUser({
+          userId: deleteMember._id
+        }, signal).then((data) => {
+          if (data && data.error) {
+            setRedirectToSignin(true)
+          } else {
+            deleteMemberDetail = data;
+          }
+        })
+
+        const { clubList } = deleteMemberDetail;
+        const index = clubList.findIndex(obj => obj.clubId === clubId);
+        clubList.splice(index, 1);
+
+        // Remove from members list
+        setMembers((prevMembers) => prevMembers.filter((member) => member._id !== deleteMember._id));
+
+        deleteMemberDetail.clubList = clubList;
+        if(deleteMember._id == user._id){
+            setUser((prevUser) => ({
+                ...prevUser,
+                clubList: clubList
+              }));
+        }
+        update({userId: deleteMember._id}, {t: jwt.token}, deleteMemberDetail).then((data) => {
+            if (data && data.error) {
+                console.log(data.error)
+            } else {
+                setUser(data);
+                setInClub(false);
+            }
+        })
+
+        return function cleanup(){
+          abortController.abort()
+        }
     }
 
     const handleLeaveClub = () => {
@@ -288,7 +333,11 @@ export default function Club() {
                                     </Typography>
                                     {members.length > 0 &&
                                         members.map((item, index) => (
-                                            <ListItem key={index}>
+                                            <ListItem key={index} secondaryAction={clubAdmin && 
+                                                <IconButton size="small" color="action" onClick={()=>{handleMovingMember(item)}}>
+                                                  <PersonRemoveIcon  fontSize="inherit"/>
+                                                </IconButton>
+                                              }>
                                                 <ListItemAvatar>
                                                     {item.pictureUri ? <Avatar src={item.pictureUri} /> : <Avatar {...stringAvatar(item.name)} />}
                                                 </ListItemAvatar>

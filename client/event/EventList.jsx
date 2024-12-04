@@ -408,13 +408,8 @@ const EventList = () => {
             <ListItem alignItems="flex-start"
             secondaryAction={
               <>
-                {/* <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleRateEvent(event)}
-                >
-                  Detail
-                </Button> */}
+                {auth.isAuthenticated() && (auth.isAuthenticated().user.isAdmin ||
+                clubs.find(item => item._id === event.club._id).leadership.some(leader => leader.leadershipId === auth.isAuthenticated().user._id))  && 
                 <Button
                   variant="outlined"
                   size="small"
@@ -422,7 +417,9 @@ const EventList = () => {
                   onClick={(e) => handleEditClick(e, event)}
                 >
                   Edit
-                </Button>
+                </Button>}
+                {auth.isAuthenticated() && (auth.isAuthenticated().user.isAdmin ||
+                clubs.find(item => item._id === event.club._id).leadership.some(leader => leader.leadershipId === auth.isAuthenticated().user._id))  &&
                 <Button
                   variant="contained"
                   color="error"
@@ -430,7 +427,7 @@ const EventList = () => {
                   onClick={(e) => handleDeleteEvent(e, event._id)}
                 >
                   Delete
-                </Button>
+                </Button>}
                 </>
             }>
               <ListItemAvatar>
