@@ -6,13 +6,11 @@ import Paper from '@mui/material/Paper'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
 import ListItemText from '@mui/material/ListItemText'
 import Avatar from '@mui/material/Avatar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Edit from '@mui/icons-material/Edit'
-import Person from '@mui/icons-material/Person'
 import Divider from '@mui/material/Divider'
 import Container from '@mui/material/Container';
 import DeleteUser from './DeleteUser'
@@ -23,14 +21,9 @@ import {useLocation, Navigate, Link} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import CircleIcon from '@mui/icons-material/Circle';
+import stringAvatar from '../user/user-helper.js';
 
 const useStyles = makeStyles(theme => ({
-  // root: theme.mixins.gutters({
-  //   maxWidth: 600,
-  //   margin: 'auto',
-  //   padding: theme.spacing(3),
-  //   marginTop: theme.spacing(5)
-  // }),
   title: {
     margin: '10 auto',
     color: theme.palette.protectedTitle
@@ -114,11 +107,7 @@ export default function Profile({ match }) {
     return <Navigate to="/signin" state={{ from: location.pathname }} replace />;
       
   }
-  // if (auth.isAuthenticated()) {
-  //   console.log( auth.isAuthenticated().user._id)
-  //   console.log( auth.isAuthenticated().user.isAdmin)
-  //   console.log(user._id)
-  // }
+
     return (
       <Container maxWidth="lg">
       <Paper className={classes.root} elevation={4}>
@@ -128,7 +117,7 @@ export default function Profile({ match }) {
         <List dense>
           <ListItem>
             <ListItemAvatar>
-              <Avatar src={user.pictureUri} />
+              {user.pictureUri ? <Avatar src={user.pictureUri} /> : <Avatar {...stringAvatar(user.name)} />}
             </ListItemAvatar>
             <ListItemText primary={user.name} secondary={user.email}/> {
              showEdit() &&

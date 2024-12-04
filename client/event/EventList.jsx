@@ -15,7 +15,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 import Chip from "@mui/material/Chip";
@@ -34,6 +34,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import auth from "../lib/auth-helper.js";
 
 const EventList = () => {
+  const location = useLocation()
   const [expanded, setExpanded] = React.useState('panel1');
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -68,6 +69,13 @@ const EventList = () => {
         setEvents(eventsData);
         setClubs(clubsData);
         setFilteredEvents(eventsData); // Initialize filtered events
+        if(location.state){
+          const { clubId } = location.state
+          setFilter((prevFilter) => ({
+            ...prevFilter,
+            club: clubId,
+          }));
+        }
       } catch (err) {
         setError("Error loading events or clubs");
       } finally {
@@ -148,8 +156,12 @@ const EventList = () => {
     try {
       const updated = await updateEvent(event._id, event);
       setEvents((prevItems) =>{
-        return prevItems.map((item) =>
-          item._id === event._id  ? updated : item
+        return prevItems.map((item) =>{
+          if(item._id === event._id){
+            item.rating = updated.rating;
+          }
+          return item;
+        }
         )}
       );
     } catch (err) {
@@ -290,14 +302,17 @@ const EventList = () => {
             Event Management
           </Typography>
         </ListItemText>
-        <Button
+        {auth.isAuthenticated() &&
+          auth.isAuthenticated().user.isAdmin && (
+          <Button
           variant="contained"
           sx={{ mb: 2 }}
           startIcon={<AddIcon />}
           onClick={() => handleAddClick()}
-        >
-          Add
-        </Button>
+          >
+            Add Event
+          </Button>
+        )}
       </ListItem>
       {/* Filter Section */}
       <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>

@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar'
-import Person from '@mui/icons-material/Person'
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button'
 import auth from '../lib/auth-helper'
 import {read} from './api-user.js'
+import stringAvatar from '../user/user-helper.js';
 
 export default function UserAvatar() {
     const navigate = useNavigate();
@@ -39,12 +39,19 @@ export default function UserAvatar() {
     }, [])
     return (
       <>
-        <Avatar
-          data-screenshot="toggle-mode"
-          onClick={handleClick}
-          size="small"
-          src={user.pictureUri}
-        />
+        {user.pictureUri ? 
+          <Avatar
+            data-screenshot="toggle-mode"
+            onClick={handleClick}
+            size="small"
+            src={user.pictureUri}
+          /> : 
+          <Avatar 
+            data-screenshot="toggle-mode"
+            onClick={handleClick}
+            size="small"
+            {...stringAvatar(user.name)} 
+          />}
         <Menu
           anchorEl={anchorEl}
           id="account-menu"

@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography'
 import {list} from './api-user.js'
 import { Link as RouterLink } from 'react-router-dom';
+import stringAvatar from '../user/user-helper.js';
 
 
 export default function Users() {
@@ -94,7 +95,7 @@ export default function Users() {
               </IconButton>
             }> 
               <ListItemAvatar>
-                <Avatar src={item.pictureUri} /> 
+                {item.pictureUri ? <Avatar src={item.pictureUri} /> : <Avatar {...stringAvatar(item.name)} />}
               </ListItemAvatar>
               <ListItemText primary={item.name}/>
             </ListItem>

@@ -12,11 +12,11 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import ListItemButton from '@mui/material/ListItemButton';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
-import PersonIcon from '@mui/icons-material/Person';
 import Alert from '@mui/material/Alert';
 import DeleteClub from './DeleteClub.jsx';
 import EditClub from './EditClub.jsx';
@@ -26,6 +26,9 @@ import {update} from '../user/api-user.js'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import CircleIcon from '@mui/icons-material/Circle';
+import ArrowForward from '@mui/icons-material/ArrowForward';
+import {Link} from 'react-router-dom'
+import stringAvatar from '../user/user-helper.js';
 
 export default function Club() {
     const jwt = auth.isAuthenticated()
@@ -47,7 +50,6 @@ export default function Club() {
 
         read({ clubId: clubId }, signal).then((data) => {
             if (data && data.error) {
-                console.log(data.error);
                 setClub(null); // Set club to null if there's an error
                 setError('Failed to load users. Please try again later.');
             } else {
@@ -85,7 +87,6 @@ export default function Club() {
         const query = {clubId: clubId}
         listUser(signal, query).then((data) => {
         if (data && data.error) {
-            console.log(data.error);
             setError('Failed to load users. Please try again later.');
         } else {
             setMembers(data);
@@ -174,7 +175,6 @@ export default function Club() {
             } else {
                 setUser(data);
                 setInClub(false);
-                console.log(data)
             }
         })
     }
@@ -190,25 +190,43 @@ export default function Club() {
                     <CircularProgress color="inherit" />
                 </Backdrop>
                 {club &&
-                <Grid container spacing={3}>
+                <Grid container spacing={3} sx={{p:1}}>
                     <Grid>
                         <Box
                             component="img"
                             sx={{
                                 width: 200,
                                 maxWidth: { xs: 200, md: 200 },
+                                m: 1
                             }}
                             alt={club.name}
                             src={club.pictureUri}
                         />
                         <Grid>
-                            {auth.isAuthenticated() && !inClub && !auth.isAuthenticated().user.isAdmin && <Button variant="contained" onClick={handleJoinClub}>
+                            {auth.isAuthenticated() && !inClub && !auth.isAuthenticated().user.isAdmin && 
+                            <Button variant="contained" onClick={handleJoinClub} sx={{m:1}}>
                                 Join Club
                             </Button>}
                             
-                            {auth.isAuthenticated() && inClub && !auth.isAuthenticated().user.isAdmin && <Button variant="contained" onClick={handleLeaveClub}>
+                            {auth.isAuthenticated() && inClub && !auth.isAuthenticated().user.isAdmin && 
+                            <Button variant="contained" onClick={handleLeaveClub}sx={{m:1}}>
                                 Leave Club
                             </Button>}
+                        </Grid>
+                        <Grid xs={12} md={6}>
+                            <Typography sx={{ ml: 1 }} variant="subtitle1" component="div">
+                                Contact Info
+                            </Typography>
+                            {club.contactInfo.map((contact, index) => (
+                                contact.uri && (
+                                    <ListItem key={index} sx={{ p: 0, ml:1 }}>
+                                        <ListItemIcon sx={{minWidth:'30px'}}>
+                                            {index === 0 ? <EmailIcon fontSize="small"/> : index === 1 ? <TwitterIcon fontSize="small"/> : <InstagramIcon fontSize="small"/>}
+                                        </ListItemIcon>
+                                        <ListItemText secondary={contact.uri} />
+                                    </ListItem>
+                                    )
+                                ))}
                         </Grid>
                     </Grid>
                     <Grid>
@@ -242,37 +260,26 @@ export default function Club() {
                             <ListItem>
                                 <ListItemText primary={`Type: ${club.type}`} />
                             </ListItem>
+                            <ListItem>
+                                <Link to="/eventList" state={{ clubId: club._id }} >
+                                    <Button endIcon={<ArrowForward />} sx={{p:0}}>
+                                        View Events
+                                    </Button>
+                                </Link>
+                            </ListItem>
                             <Grid container spacing={2}>
                                 <Grid xs={12} md={6}>
-                                    <Typography sx={{ mt: 1 }} variant="h6" component="div">
+                                    <Typography sx={{ mt: 1, ml:2 }} variant="h6" component="div">
                                         Leadership Info
                                     </Typography>
                                     {leaders.length > 0 &&
                                         leaders.map((item, index) => (
                                             <ListItem key={index}>
-                                                <ListItemIcon>
-                                                    <PersonIcon />
-                                                </ListItemIcon>
+                                                    <ListItemAvatar>
+                                                    {item.pictureUri ? <Avatar src={item.pictureUri} /> : <Avatar {...stringAvatar(item.name)} />}
+                                                    </ListItemAvatar>
                                                 <ListItemText primary={item.name} secondary={item.email} />
                                             </ListItem>
-                                        ))}
-                                </Grid>
-                                <Grid xs={12} md={6}>
-                                    <Typography sx={{ mt: 1 }} variant="h6" component="div">
-                                        Contact Info
-                                    </Typography>
-                                    {club.contactInfo &&
-                                        club.contactInfo.map((contact, index) => (
-                                            contact.uri && (
-                                                <ListItem key={index}>
-                                                    <ListItemButton>
-                                                        <ListItemIcon>
-                                                            {index === 0 ? <EmailIcon /> : index === 1 ? <TwitterIcon /> : <InstagramIcon />}
-                                                        </ListItemIcon>
-                                                        <ListItemText primary={contact.uri} />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            )
                                         ))}
                                 </Grid>
                                 <Grid xs={12} md={6}>
@@ -282,9 +289,9 @@ export default function Club() {
                                     {members.length > 0 &&
                                         members.map((item, index) => (
                                             <ListItem key={index}>
-                                                <ListItemIcon>
-                                                    <PersonIcon />
-                                                </ListItemIcon>
+                                                <ListItemAvatar>
+                                                    {item.pictureUri ? <Avatar src={item.pictureUri} /> : <Avatar {...stringAvatar(item.name)} />}
+                                                </ListItemAvatar>
                                                 <ListItemText primary={item.name} secondary={item.email} />
                                             </ListItem>
                                         ))}
