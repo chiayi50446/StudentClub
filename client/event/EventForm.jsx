@@ -50,7 +50,7 @@ const EventForm = () => {
         console.log("Submitting event data:", eventData); // Debug log
 
         try {
-            const createdEvent = await createEvent(eventData); // Send data to API
+            const createdEvent = await createEvent(eventData, {t: jwt.token}); // Send data to API
             console.log("Created event:", createdEvent); // Debug log
 
             if (createdEvent) {

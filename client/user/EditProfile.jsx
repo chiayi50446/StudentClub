@@ -188,7 +188,7 @@ export default function EditProfile({ match }) {
             </CardContent>
             <CardActions className={classes.submit}>
                 <Button color="primary" variant="contained" onClick={clickSubmit} >Submit</Button>
-                <Button color="primary" variant="outlined" onClick={clickCancel} >Cancel</Button>
+                <Button color="action" variant="outlined" onClick={clickCancel} >Cancel</Button>
             </CardActions>
         </Card>
     )

@@ -369,10 +369,10 @@ export default function EditClub(props) {
 
         {/* Dialog Actions */}
         <DialogActions>
-          <Button onClick={handleRequestClose} color="primary">
+          <Button onClick={handleRequestClose} color="action">
             Cancel
           </Button>
-          <Button onClick={SaveClub} color="secondary" autoFocus>
+          <Button onClick={SaveClub} autoFocus>
             Update
           </Button>
         </DialogActions>

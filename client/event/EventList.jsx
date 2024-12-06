@@ -48,6 +48,7 @@ const EventList = () => {
     setComment('');
     setExpanded(newExpanded ? panel : false);
   };
+  const jwt = auth.isAuthenticated()
   const navigate = useNavigate();
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
@@ -160,7 +161,7 @@ const EventList = () => {
     }
     event.rating.push({ userId: auth.isAuthenticated().user._id, userName:auth.isAuthenticated().user.name, stars: rating, comment: comment });
     try {
-      const updated = await updateEvent(event._id, event);
+      const updated = await updateEvent(event._id, event, {t: jwt.token});
       setEvents((prevItems) =>{
         return prevItems.map((item) =>{
           if(item._id === event._id){
@@ -187,7 +188,7 @@ const EventList = () => {
       await updateEvent(editingEvent._id, {
         ...updatedEvent,
         date: formattedDate,
-      });
+      }, {t: jwt.token});
 
       // After updating, refetch the events to refresh the list
       setEvents((prevItems) =>{
@@ -204,7 +205,7 @@ const EventList = () => {
   const handleDeleteEvent = async (e, eventId) => {
     e.stopPropagation();
     try {
-      await deleteEvent(eventId);
+      await deleteEvent(eventId, {t: jwt.token});
       setEvents((prevItems) =>{
         return prevItems.filter((item) =>
           item._id !== eventId
@@ -584,7 +585,7 @@ const EventList = () => {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
+          <Button onClick={handleCloseDialog} color="action">
             Cancel
           </Button>
           <Button onClick={handleUpdateEvent} color="primary">

@@ -77,10 +77,10 @@ export default function DeleteClub(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleRequestClose} color="primary">
+          <Button onClick={handleRequestClose} color="action">
             Cancel
           </Button>
-          <Button onClick={deleteClub} color="secondary" autoFocus="autoFocus">
+          <Button onClick={deleteClub} autoFocus="autoFocus">
             Confirm
           </Button>
         </DialogActions>

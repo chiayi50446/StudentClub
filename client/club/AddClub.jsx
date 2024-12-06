@@ -346,7 +346,7 @@ export default function AddClub(props) {
           })}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button color="action" onClick={handleCancel}>Cancel</Button>
           <Button type="submit">Add</Button>
         </DialogActions>
       </Dialog>
