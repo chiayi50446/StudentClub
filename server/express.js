@@ -13,7 +13,7 @@ import path from 'path'
 const allowedOrigins = [
     'http://localhost:4173',
     'http://localhost:5173',
-    'https://test-firebase-project-5f453.web.app/',
+    'https://test-firebase-project-5f453.web.app',
 ]
 
 const app = express()
