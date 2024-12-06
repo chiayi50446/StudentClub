@@ -97,20 +97,14 @@ router.delete('/api/events/:id', async (req, res) => {
 router.post('/api/events/rating/:id', async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
-  
+
     const event = await Event.findById(id);
     if (!event) return res.status(404).json({ message: 'Event not found' });
-  
+
     event.ratings.push(rating);
     await event.save();
-  
+
     res.json({ message: 'Rating added', averageRating: event.getAverageRating() });
 });
 
-// Get ratings for an event
-
-router.get('/:eventId', async (req, res) => {
-    const ratings = await Rating.find({ eventId: req.params.eventId });
-    res.json(ratings);
-});
 export default router;
