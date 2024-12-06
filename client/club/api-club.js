@@ -1,8 +1,10 @@
+const apiUrl = (process.env.NODE_ENV === 'development') ? '' : import.meta.env.VITE_API_URL;
+
 // Function to create a new club
 const create = async (club, credentials) => {
     try {
         // Send a POST request to create the club
-        let response = await fetch("/api/clubs/", {
+        let response = await fetch(`${apiUrl}api/clubs/`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -35,7 +37,7 @@ const create = async (club, credentials) => {
 // Function to list all clubs
 const list = async (signal, query) => {
     try {
-        let uri = "/api/clubs";
+        let uri = `${apiUrl}/api/clubs`;
         if (query) {
             Object.entries(query).map(([key, value]) => {
                 uri += `?${key}=${value}`;
@@ -61,7 +63,7 @@ const list = async (signal, query) => {
 // Function to read a specific club's details by ID
 const read = async (params, signal) => {
     try {
-        let response = await fetch(`/api/clubs/${params.clubId}`, {
+        let response = await fetch(`${apiUrl}/api/clubs/${params.clubId}`, {
             method: "GET",
             signal: signal,
             headers: {
@@ -84,7 +86,7 @@ const read = async (params, signal) => {
 // Function to update an existing club's details
 const update = async (params, club, credentials) => {
     try {
-        let response = await fetch(`/api/clubs/${params.clubId}`, {
+        let response = await fetch(`${apiUrl}/api/clubs/${params.clubId}`, {
             method: "PUT",
             headers: {
                 Accept: "application/json",
@@ -104,7 +106,7 @@ const update = async (params, club, credentials) => {
 // Function to remove a club (delete)
 const remove = async (params, credentials) => {
     try {
-        let response = await fetch(`/api/clubs/${params.clubId}`, {
+        let response = await fetch(`${apiUrl}/api/clubs/${params.clubId}`, {
             method: "DELETE",
             headers: {
                 Accept: "application/json",

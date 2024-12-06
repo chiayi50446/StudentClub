@@ -4,7 +4,8 @@ const { PORT = 3000 } = process.env;
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: {
+
+    proxy: (process.env.NODE_ENV === 'development') ? {
       '/api': {
         target: `http://localhost:${PORT}`,
         changeOrigin: true,
@@ -13,12 +14,12 @@ export default defineConfig({
         target: `http://localhost:${PORT}`,
         changeOrigin: true,
       },
-    },
+    } : {},
   },
   build: {
     manifest: true,
-    rollupOptions: {
-      input: "./src/main.jsx",
-    },
   },
+  define: {
+    'process.env': process.env
+  }
 });

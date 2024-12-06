@@ -1,6 +1,8 @@
+const apiUrl = (process.env.NODE_ENV === 'development') ? '' : import.meta.env.VITE_API_URL;
+
 const create = async (user) => {
     try {
-        let response = await fetch('/api/users/', {
+        let response = await fetch(`${apiUrl}/api/users/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -16,7 +18,7 @@ const create = async (user) => {
 
 const list = async (signal, query) => {
     try {
-        let uri = "/api/users";
+        let uri = `${apiUrl}/api/users`;
         if (query) {
             Object.entries(query).map(([key, value]) => {
                 uri += `?${key}=${value}`;
@@ -34,7 +36,7 @@ const list = async (signal, query) => {
 
 const read = async (params, signal) => {
     try {
-        let response = await fetch('/api/users/' + params.userId, {
+        let response = await fetch(`${apiUrl}/api/users/` + params.userId, {
             method: 'GET',
             signal: signal,
             headers: {
@@ -50,7 +52,7 @@ const read = async (params, signal) => {
 
 const update = async (params, credentials, user) => {
     try {
-        let response = await fetch('/api/users/' + params.userId, {
+        let response = await fetch(`${apiUrl}/api/users/` + params.userId, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -67,7 +69,7 @@ const update = async (params, credentials, user) => {
 
 const remove = async (params, credentials) => {
     try {
-        let response = await fetch('/api/users/' + params.userId, {
+        let response = await fetch(`${apiUrl}/api/users/` + params.userId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

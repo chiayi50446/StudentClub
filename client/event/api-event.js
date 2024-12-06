@@ -1,3 +1,5 @@
+const apiUrl = (process.env.NODE_ENV === 'development') ? '' : import.meta.env.VITE_API_URL;
+
 // Helper function to handle API requests
 const apiRequest = async (url, method, eventData = null, signal = null) => {
     try {
@@ -11,7 +13,7 @@ const apiRequest = async (url, method, eventData = null, signal = null) => {
             signal,
         };
 
-        const response = await fetch(url, options);
+        const response = await fetch(apiUrl + url, options);
 
         if (!response.ok) {
             const errorData = await response.json();
