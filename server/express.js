@@ -27,7 +27,7 @@ app.use(cors({
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Specify the allowed headers
+    allowedHeaders: ['Accept', 'Content-Type', 'Authorization'] // Specify the allowed headers
 }))
 
 app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')))
