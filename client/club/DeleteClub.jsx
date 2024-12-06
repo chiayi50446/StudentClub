@@ -1,60 +1,63 @@
-import React, {useState} from 'react'
-import PropTypes from 'prop-types'
-import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import auth from '../lib/auth-helper.js'
-import {remove} from './api-club.js'
-import {Navigate} from 'react-router-dom'
-import Alert from '@mui/material/Alert';
-import Tooltip from '@mui/material/Tooltip';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import auth from "../lib/auth-helper.js";
+import { remove } from "./api-club.js";
+import { Navigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function DeleteClub(props) {
-  const [open, setOpen] = useState(false)
-  const [redirect, setRedirect] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   const [error, setError] = useState(null); // State to handle errors
 
-  const jwt = auth.isAuthenticated()
+  const jwt = auth.isAuthenticated();
   const clickButton = () => {
-    setOpen(true)
-  }
-  const deleteClub = () => { 
-    remove({
-        clubId: props.clubId
-    }, {t: jwt.token}).then((data) => {
-      if(data){
+    setOpen(true);
+  };
+  const deleteClub = () => {
+    remove(
+      {
+        clubId: props.clubId,
+      },
+      { t: jwt.token }
+    ).then((data) => {
+      if (data) {
         if (data.error) {
-          console.log(data.error)
+          console.log(data.error);
           setError(data.error);
         } else {
-          setRedirect(true)
+          setRedirect(true);
         }
-      }else{
-        setError('Failed to remove club. Please try again.')
+      } else {
+        setError("Failed to remove club. Please try again.");
       }
-      
-    })
-  }
+    });
+  };
   const handleRequestClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   if (redirect) {
-    return <Navigate to='/'/>
+    return <Navigate to="/" />;
   }
-    return (<span>
+  return (
+    <span>
       <Tooltip
         title="Delete Club"
         slotProps={{
           popper: {
             modifiers: [
               {
-                name: 'offset',
+                name: "offset",
                 options: { offset: [0, -14] },
               },
             ],
@@ -62,36 +65,26 @@ export default function DeleteClub(props) {
         }}
       >
         <IconButton aria-label="Delete" onClick={clickButton} color="error">
-          <DeleteIcon/>
+          <DeleteIcon />
         </IconButton>
       </Tooltip>
 
       <Dialog open={open} onClose={handleRequestClose}>
-        {error && 
-          <Alert severity="error">{error}</Alert>
-        }
+        {error && <Alert severity="error">{error}</Alert>}
         <DialogTitle>{"Delete Club"}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Confirm to delete this club.
-          </DialogContentText>
+          <DialogContentText>Confirm to delete this club.</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRequestClose} color="action">
             Cancel
           </Button>
-          <Button onClick={deleteClub} autoFocus="autoFocus">
-            Confirm
-          </Button>
+          <Button onClick={deleteClub}>Confirm</Button>
         </DialogActions>
       </Dialog>
-    </span>)
-
+    </span>
+  );
 }
 DeleteClub.propTypes = {
-    clubId: PropTypes.string.isRequired
-}
-
-
-
-
+  clubId: PropTypes.string.isRequired,
+};

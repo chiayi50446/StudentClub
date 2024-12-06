@@ -1,9 +1,7 @@
 const apiUrl = (process.env.NODE_ENV === 'development') ? '' : import.meta.env.VITE_API_URL;
 
-// Function to create a new club
 const create = async (club, credentials) => {
     try {
-        // Send a POST request to create the club
         let response = await fetch(`${apiUrl}api/clubs/`, {
             method: "POST",
             headers: {
@@ -14,27 +12,23 @@ const create = async (club, credentials) => {
             body: JSON.stringify(club),
         });
 
-        // Parse the response JSON
         const data = await response.json();
-
-        // Check if the response is successful (status code 2xx)
         if (response.ok) {
             alert("Club created successfully!");
-            return data; // Return the data of the newly created club
+            return data;
         } else {
             alert(
                 "Error creating club: " + (data.message || "Something went wrong.")
             );
-            return null; // Return null if creation fails
+            return null;
         }
     } catch (err) {
         console.error("Error:", err);
         alert("An error occurred while creating the club. Please try again later.");
-        return null; // Return null in case of any error
+        return null;
     }
 };
 
-// Function to list all clubs
 const list = async (signal, query) => {
     try {
         let uri = `${apiUrl}/api/clubs`;

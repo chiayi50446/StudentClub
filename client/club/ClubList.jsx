@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { makeStyles } from "@mui/styles";
 import Paper from "@mui/material/Paper";
 import Card from "@mui/material/Card";
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "20px",
     fontSize: "18px",
     color: theme.palette.text.secondary,
-  }
+  },
 }));
 
 export default function ClubList() {
@@ -65,6 +65,17 @@ export default function ClubList() {
   const [type, setType] = useState(""); // Category filter state
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Search term filter state
+  const [isAdmin, setIsAdmin] = useState(
+    auth.isAuthenticated() && auth.isAuthenticated().user.isAdmin
+  );
+
+  useEffect(() => {
+    const unsubscribe = auth.subscribeAuthStateChange(() => {
+      setIsAdmin(auth.isAuthenticated() && auth.isAuthenticated().user.isAdmin);
+    });
+
+    return () => unsubscribe(); // clear listener
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -129,92 +140,91 @@ export default function ClubList() {
       <ListItem alignItems="flex-start" sx={{ mb: 2 }}>
         <ListItemText>
           <Typography variant="h5" className={classes.title} inline="true">
-              Club Management
+            Club Management
           </Typography>
         </ListItemText>
-        {auth.isAuthenticated() &&
-        auth.isAuthenticated().user.isAdmin && (
+        {isAdmin && (
           <Grid>
             <AddClub />
           </Grid>
         )}
       </ListItem>
       <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
-          <TextField
-            id="outlined-basic"
-            size="small"
-            variant="outlined"
-            placeholder="Search by name"
-            value={searchTerm}
-            sx={{ mr: 1 }}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <FormControl
-            variant="outlined"
-            size="small"
-            sx={{ mr: 1, minWidth: 150 }}
+        <TextField
+          id="outlined-basic"
+          size="small"
+          variant="outlined"
+          placeholder="Search by name"
+          value={searchTerm}
+          sx={{ mr: 1 }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <FormControl
+          variant="outlined"
+          size="small"
+          sx={{ mr: 1, minWidth: 150 }}
+        >
+          <InputLabel id="status">Select Status</InputLabel>
+          <Select
+            label="Select Status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
           >
-            <InputLabel id="status">Select Status</InputLabel>
-            <Select
-              label="Select Status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <MenuItem value="active">Active</MenuItem>
-              <MenuItem value="inactive">Inactive</MenuItem>
-              <MenuItem value="suspended">Suspended</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl
-            variant="outlined"
-            size="small"
-            sx={{ mr: 1, minWidth: 150 }}
+            <MenuItem value="active">Active</MenuItem>
+            <MenuItem value="inactive">Inactive</MenuItem>
+            <MenuItem value="suspended">Suspended</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl
+          variant="outlined"
+          size="small"
+          sx={{ mr: 1, minWidth: 150 }}
+        >
+          <InputLabel id="type">Select Type</InputLabel>
+          <Select
+            label="Select Type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
           >
-            <InputLabel id="type">Select Type</InputLabel>
-            <Select
-              label="Select Type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-            >
-              <MenuItem value="academic">Academic</MenuItem>
-              <MenuItem value="sports">Sports</MenuItem>
-              <MenuItem value="arts">Arts</MenuItem>
-              <MenuItem value="cultural">Cultural</MenuItem>
-              <MenuItem value="technology">Technology</MenuItem>
-              <MenuItem value="volunteering">Volunteering</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <div>
-          <Stack direction="row" sx={{ mb: 1 }}>
-            {searchTerm && (
-              <Chip
-                size="small"
-                label={searchTerm}
-                variant="outlined"
-                onClick={(e) => setSearchTerm("")}
-                onDelete={(e) => setSearchTerm("")}
-              />
-            )}
-            {status && (
-              <Chip
-                size="small"
-                label={status}
-                variant="outlined"
-                onClick={(e) => setStatus("")}
-                onDelete={(e) => setStatus("")}
-              />
-            )}
-            {type && (
-              <Chip
-                size="small"
-                label={type}
-                onClick={(e) => setType("")}
-                onDelete={(e) => setType("")}
-              />
-            )}
-          </Stack>
-        </div>
+            <MenuItem value="academic">Academic</MenuItem>
+            <MenuItem value="sports">Sports</MenuItem>
+            <MenuItem value="arts">Arts</MenuItem>
+            <MenuItem value="cultural">Cultural</MenuItem>
+            <MenuItem value="technology">Technology</MenuItem>
+            <MenuItem value="volunteering">Volunteering</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <div>
+        <Stack direction="row" sx={{ mb: 1 }}>
+          {searchTerm && (
+            <Chip
+              size="small"
+              label={searchTerm}
+              variant="outlined"
+              onClick={(e) => setSearchTerm("")}
+              onDelete={(e) => setSearchTerm("")}
+            />
+          )}
+          {status && (
+            <Chip
+              size="small"
+              label={status}
+              variant="outlined"
+              onClick={(e) => setStatus("")}
+              onDelete={(e) => setStatus("")}
+            />
+          )}
+          {type && (
+            <Chip
+              size="small"
+              label={type}
+              onClick={(e) => setType("")}
+              onDelete={(e) => setType("")}
+            />
+          )}
+        </Stack>
+      </div>
       <Paper className={classes.root} elevation={4}>
         {error && (
           <div className={classes.noClubsContainer}>

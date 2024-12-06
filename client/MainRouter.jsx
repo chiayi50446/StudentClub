@@ -12,7 +12,7 @@ import ClubList from "./club/ClubList.jsx";
 import Club from "./club/Club.jsx";
 import EventForm from "./event/EventForm.jsx";
 import EventList from "./event/EventList.jsx";
-import EventDetails from "./event/EventDetails.jsx";
+
 function MainRouter() {
   return (
     <div>
@@ -23,7 +23,6 @@ function MainRouter() {
         <Route path="/club/:clubId" element={<Club />} />
         <Route path="/eventList" element={<EventList />} />
         <Route path="/eventForm" element={<EventForm />} />
-        <Route path="/event/:eventId" element={<EventDetails />} />
         <Route path="/users" element={<Users />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />

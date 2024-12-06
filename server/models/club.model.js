@@ -40,21 +40,15 @@ const ClubSchema = new mongoose.Schema({
   },
   contactInfo: [
     {
-      // contactEmail: {
-      //   type: String,
-      //   required: true,
-      //   match: [/.+\@.+\..+/, 'Please fill a valid email address'],
-      // },
-      // socialLinks: {
-      //   instagram: {
-      //     type: String,
-      //     match: /^https:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9._]+\/?$/, // URL validation for Instagram
-      //   },
-      //   website: {
-      //     type: String,
-      //     match: /^https?:\/\/[a-zA-Z0-9-._~:\/?#@!$&'()*+,;=%]+$/, // URL validation for website
-      //   }
-      // }
+      name: {
+        type: String,
+      },
+      status: {
+        type: Boolean,
+      },
+      uri: {
+        type: String,
+      },
     }
   ],
   created: {

@@ -1,54 +1,66 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import { Card, CardContent, Typography, TextField, CardActions, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { create } from './api-user'; // Make sure this API is correct.
+import React, { useState } from "react";
+import { makeStyles } from "@mui/styles";
+import {
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  CardActions,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { create } from "./api-user"; // Make sure this API is correct.
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     maxWidth: 400,
-    margin: '0 auto',
+    margin: "0 auto",
     marginTop: theme.spacing(3),
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
   },
   textField: {
-    width: '100%',
+    width: "100%",
     marginBottom: theme.spacing(2),
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: theme.spacing(2),
   },
   submit: {
-    margin: '0 auto',
+    margin: "0 auto",
     marginBottom: theme.spacing(2),
   },
   title: {
     fontSize: 18,
   },
   actions: {
-    display: 'flex',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
   },
 }));
 
 export default function Signup() {
   const classes = useStyles();
 
-  const [values, setValues] = useState({ 
-    name: '',
-    email: '',
-    password: '',
-    error: '',
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: "",
+    error: "",
   });
 
   const [open, setOpen] = useState(false); // State for success dialog.
 
   // Handle form field change
-  const handleChange = name => event => {
-    setValues({ ...values, [name]: event.target.value, error: '' }); // Clear error on input change
+  const handleChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value, error: "" }); // Clear error on input change
   };
 
   // Close success dialog
@@ -60,11 +72,11 @@ export default function Signup() {
   const clickSubmit = (e) => {
     e.preventDefault(); // Prevent page reload
     if (!values.name || !values.email || !values.password) {
-      setValues({ ...values, error: 'All fields are required' });
+      setValues({ ...values, error: "All fields are required" });
       return;
     }
-    if(values.name.toLocaleLowerCase() === "admin"){
-      setValues({...values, error: "user name cannot be 'admin'"})
+    if (values.name.toLocaleLowerCase() === "admin") {
+      setValues({ ...values, error: "user name cannot be 'admin'" });
       return;
     }
 
@@ -76,16 +88,21 @@ export default function Signup() {
     };
 
     // Call create API function from api-user.js
-    create(user).then((data) => { 
-      if (data && data.error) {
-        setValues({ ...values, error: data.error }); // Show error if API returns an error
-      } else {
-        setOpen(true); // Open dialog if signup is successful
-        setValues({ name: '', email: '', password: '', error: '' }); // Clear form after submission
-      }
-    }).catch((error) => {
-      setValues({ ...values, error: 'An error occurred. Please try again later.' }); // Error handling
-    });
+    create(user)
+      .then((data) => {
+        if (data && data.error) {
+          setValues({ ...values, error: data.error }); // Show error if API returns an error
+        } else {
+          setOpen(true); // Open dialog if signup is successful
+          setValues({ name: "", email: "", password: "", error: "" }); // Clear form after submission
+        }
+      })
+      .catch((error) => {
+        setValues({
+          ...values,
+          error: "An error occurred. Please try again later.",
+        }); // Error handling
+      });
   };
 
   Signup.propTypes = {
@@ -97,20 +114,22 @@ export default function Signup() {
     <div>
       <Card className={classes.card}>
         <CardContent>
-          <Typography variant="h6" className={classes.title}> 
+          <Typography variant="h6" className={classes.title}>
             Sign Up
           </Typography>
 
           {/* Show error message if any */}
-          {values.error && <Typography className={classes.error}>{values.error}</Typography>}
-          
+          {values.error && (
+            <Typography className={classes.error}>{values.error}</Typography>
+          )}
+
           {/* Input fields for name, email, and password */}
           <TextField
             id="name"
             label="Name"
             className={classes.textField}
             value={values.name}
-            onChange={handleChange('name')}
+            onChange={handleChange("name")}
             margin="normal"
           />
           <TextField
@@ -118,7 +137,7 @@ export default function Signup() {
             label="Email"
             className={classes.textField}
             value={values.email}
-            onChange={handleChange('email')}
+            onChange={handleChange("email")}
             margin="normal"
           />
           <TextField
@@ -126,23 +145,23 @@ export default function Signup() {
             label="Password"
             className={classes.textField}
             value={values.password}
-            onChange={handleChange('password')}
+            onChange={handleChange("password")}
             type="password"
             margin="normal"
           />
-        </CardContent> 
+        </CardContent>
         <CardActions className={classes.actions}>
           {/* Changed button type to 'submit' */}
-          <Button 
-            color="primary" 
-            variant="contained" 
-            onClick={clickSubmit} 
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={clickSubmit}
             className={classes.submit}
             type="submit"
           >
             Submit
           </Button>
-        </CardActions> 
+        </CardActions>
       </Card>
 
       {/* Dialog for successful signup */}
@@ -150,16 +169,16 @@ export default function Signup() {
         <DialogTitle>New Account</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            New account successfully created. 
+            New account successfully created.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Link to="/Signin">
-            <Button color="primary" autoFocus variant="contained" onClick={handleClose}>
-              Sign In 
+            <Button color="primary" variant="contained" onClick={handleClose}>
+              Sign In
             </Button>
           </Link>
-        </DialogActions> 
+        </DialogActions>
       </Dialog>
     </div>
   );
