@@ -32,6 +32,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import auth from "../lib/auth-helper.js";
+import Alert from "@mui/material/Alert";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -45,6 +46,7 @@ const EventList = () => {
   const [expanded, setExpanded] = React.useState("panel1");
 
   const handleChange = (panel) => (event, newExpanded) => {
+    setRateError("");
     setRating(0);
     setComment("");
     setExpanded(newExpanded ? panel : false);
@@ -53,6 +55,7 @@ const EventList = () => {
   const navigate = useNavigate();
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState("");
+  const [rateError, setRateError] = React.useState("");
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [clubs, setClubs] = useState([]); // State for clubs
@@ -151,6 +154,11 @@ const EventList = () => {
   };
 
   const handleRating = async (event) => {
+    if (rating === 0) {
+      setRateError("Please choose stars");
+      return;
+    }
+    setRateError("");
     setRating(0);
     setComment("");
     if (!event.rating) {
@@ -511,6 +519,7 @@ const EventList = () => {
             </Typography>
             {auth.isAuthenticated() && (
               <Paper sx={{ m: 1, p: 1 }}>
+                {rateError && <Alert severity="error">{rateError}</Alert>}
                 <ListItem
                   disableGutters
                   secondaryAction={
