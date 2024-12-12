@@ -2,7 +2,7 @@ const apiUrl = (process.env.NODE_ENV === 'development') ? '' : import.meta.env.V
 
 const create = async (club, credentials) => {
     try {
-        let response = await fetch(`${apiUrl}api/clubs/`, {
+        let response = await fetch(`${apiUrl}/api/clubs/`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
